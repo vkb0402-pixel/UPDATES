@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Updates - Short & Crisp News</title>
+    <link rel="icon" href="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAEAAQADASIAAhEBAxEB/8QAHwAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoL/8QAtRAAAgEDAwIEAwUFBAQAAAF9AQIDAAQRBRIhMUEGE1FhByJxFDKBkakQwdHwMxUWYnKCFINTQKE1/8QAHwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoL/8QAuwEAAwEBAQEBAQEBAQAAAAAAAAECAwQFBgcICQoLEAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLw8ZKisgkKFhxNQKE1J//aAAwDAQACEQMRAD8A9/ooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigAooooAKKKKACiiigD/9k=">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(74, 144, 226, 0.3);
+        }
+        .logo {
+            height: 45px;
+            width: 45px;
+            margin-right: 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .news-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(30,40,100,0.08);
+            padding: 1.2rem 1rem 1rem 1rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            border-left: 4px solid #4A90E2;
+        }
+        .news-card:hover {
+            box-shadow: 0 8px 24px rgba(30,40,100,0.15);
+            transform: translateY(-2px);
+        }
+        .news-image {
+            width: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            max-height: 180px;
+        }
+        .news-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        .news-summary {
+            font-size: 1rem;
+            color: #34495e;
+            margin-bottom: 0.4rem;
+            line-height: 1.5;
+        }
+        .news-meta {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: auto;
+            margin-bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.5rem;
+            border-top: 1px solid #ecf0f1;
+        }
+        .category-tag {
+            background: #4A90E2;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+        .category-tag.politics { background: #e74c3c; }
+        .category-tag.business { background: #27ae60; }
+        .category-tag.weather { background: #f39c12; }
+        
+        @media (max-width: 500px) {
+            .card-list { 
+                padding: 0.5rem; 
+                margin: 1rem auto;
+            }
+            header { 
+                padding: 0.8rem; 
+            }
+            h1 { 
+                font-size: 1.5rem; 
+            }
+            .logo {
+                height: 38px;
+                width: 38px;
+                margin-right: 8px;
+            }
+            .news-card {
+                padding: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            .news-title {
+                font-size: 1.1rem;
+            }
+            .news-summary {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="1000103201.jpeg" alt="Updates Logo" class="logo">
+        <h1>Updates</h1>
+    </header>
+    <div class="card-list">
+        <div class="news-card">
+            <img class="news-image" src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=400&q=80" alt="Education Policy News">
+            <div class="news-title">Major Education Policy Update Announced</div>
+            <div class="news-summary">
+                President Trump unveils a comprehensive new education policy, promising improved resources for teachers and expanded student funding nationwide to enhance learning outcomes.
+            </div>
+            <div class="news-meta">
+                <span class="category-tag politics">Politics</span>
+                <span>1 hour ago</span>
+            </div>
+        </div>
+        
+        <div class="news-card">
+            <img class="news-image" src="https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a?auto=format&fit=crop&w=400&q=80" alt="Tech Companies News">
+            <div class="news-title">Tech Firms Report Record Quarterly Profits</div>
+            <div class="news-summary">
+                Leading technology companies reveal impressive quarterly reports showing significant growth, driven by widespread AI adoption and surging global demand for digital solutions.
+            </div>
+            <div class="news-meta">
+                <span class="category-tag business">Business</span>
+                <span>2 hours ago</span>
+            </div>
+        </div>
+        
+        <div class="news-card">
+            <img class="news-image" src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=400&q=80" alt="Weather Update">
+            <div class="news-title">Heavy Rainfall Expected Across North India</div>
+            <div class="news-summary">
+                Meteorological department issues weather alerts forecasting heavy rainfall for the next three days across northern regions, advising residents to take necessary precautions.
+            </div>
+            <div class="news-meta">
+                <span class="category-tag weather">Weather</span>
+                <span>30 mins ago</span>
+            </div>
+        </div>
+        
+        <div class="news-card">
+            <img class="news-image" src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=400&q=80" alt="Market Update">
+            <div class="news-title">Stock Markets Hit New All-Time Highs</div>
+            <div class="news-summary">
+                Major indices reach record levels as investor confidence soars following positive economic indicators and strong corporate earnings across multiple sectors.
+            </div>
+            <div class="news-meta">
+                <span class="category-tag business">Business</span>
+                <span>4 hours ago</span>
+            </div>
+        </div>
+        
+        <div class="news-card">
+            <img class="news-image" src="https://images.unsplash.com/photo-1574671928146-f3c1e1166c7a?auto=format&fit=crop&w=400&q=80" alt="Space News">
+            <div class="news-title">NASA Announces New Mars Exploration Mission</div>
+            <div class="news-summary">
+                Space agency reveals ambitious plans for next-generation Mars rover mission, featuring advanced scientific instruments and extended exploration capabilities.
+            </div>
+            <div class="news-meta">
+                <span class="category-tag">Science</span>
+                <span>6 hours ago</span>
+            </div>
+        </div>
+        
+        <div class="news-card">
+            <img class="news-image" src="https://images.unsplash.com/photo-1461749280684-dccba630e2f6?auto=format&fit=crop&w=400&q=80" alt="Tech Innovation">
+            <div class="news-title">Revolutionary AI Breakthrough in Medical Diagnosis</div>
+            <div class="news-summary">
+                Researchers develop groundbreaking artificial intelligence system that can detect rare diseases with 99% accuracy, potentially transforming healthcare diagnostics worldwide.
+            </div>
+            <div class="news-meta">
+                <span class="category-tag">Technology</span>
+                <span>8 hours ago</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
