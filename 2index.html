@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Updates - Short & Crisp News</title>
+    <link rel="icon" href="image-1.png">
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 10px rgba(74, 144, 226, 0.3);
+        }
+        .logo {
+            height: 45px;
+            width: 45px;
+            margin-right: 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            font-size: 1.9rem;
+            font-weight: 600;
+            margin: 0;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+            max-width: 600px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .news-card {
+            background: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(30,40,100,0.08);
+            padding: 1.2rem 1rem 1rem 1rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+            border-left: 4px solid #4A90E2;
+        }
+        .news-card:hover {
+            box-shadow: 0 8px 24px rgba(30,40,100,0.15);
+            transform: translateY(-2px);
+        }
+        .news-image {
+            width: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 0.75rem;
+            max-height: 180px;
+        }
+        .news-title {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+        .news-summary {
+            font-size: 1rem;
+            color: #34495e;
+            margin-bottom: 0.4rem;
+            line-height: 1.5;
+        }
+        .news-meta {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            margin-top: auto;
+            margin-bottom: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.5rem;
+            border-top: 1px solid #ecf0f1;
+        }
+        .category-tag {
+            background: #4A90E2;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            text-transform: capitalize;
+        }
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #7f8c8d;
+            font-size: 1.1rem;
+        }
+        
+        @media (max-width: 500px) {
+            .card-list { 
+                padding: 0.5rem; 
+                margin: 1rem auto;
+            }
+            header { 
+                padding: 0.8rem; 
+            }
+            h1 { 
+                font-size: 1.5rem; 
+            }
+            .logo {
+                height: 38px;
+                width: 38px;
+                margin-right: 8px;
+            }
+            .news-card {
+                padding: 1rem;
+                margin-bottom: 0.5rem;
+            }
+            .news-title {
+                font-size: 1.1rem;
+            }
+            .news-summary {
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="image-1.png" alt="Updates Logo" class="logo">
+        <h1>Updates</h1>
+    </header>
+    
+    <div class="card-list">
+        <div class="loading">Loading latest news...</div>
+    </div>
+
+    <script>
+        // Your NewsData.io API Key
+        const apiKey = 'pub_630bb6b01dd54da7b8a20061a5bd8224';
+        
+        // API URL - fetching top news from India in English
+        const apiUrl = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=in&language=en`;
+
+        // Fetch news from API
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                const cardList = document.querySelector('.card-list');
+                cardList.innerHTML = ''; // Clear loading message
+                
+                if (data.results && data.results.length > 0) {
+                    data.results.forEach(article => {
+                        // Create news card
+                        const card = document.createElement('div');
+                        card.className = 'news-card';
+                        
+                        // Format date
+                        const pubDate = new Date(article.pubDate);
+                        const timeAgo = getTimeAgo(pubDate);
+                        
+                        // Build card HTML
+                        card.innerHTML = `
+                            ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}">` : ''}
+                            <div class="news-title">${article.title}</div>
+                            <div class="news-summary">${article.description || 'Read more for details...'}</div>
+                            <div class="news-meta">
+                                <span class="category-tag">${article.category ? article.category[0] : 'News'}</span>
+                                <span>${timeAgo}</span>
+                            </div>
+                        `;
+                        
+                        cardList.appendChild(card);
+                    });
+                } else {
+                    cardList.innerHTML = '<div class="loading">No news available at the moment.</div>';
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching news:', error);
+                document.querySelector('.card-list').innerHTML = 
+                    '<div class="loading">Failed to load news. Please try again later.</div>';
+            });
+        
+        // Function to calculate time ago
+        function getTimeAgo(date) {
+            const now = new Date();
+            const seconds = Math.floor((now - date) / 1000);
+            
+            if (seconds < 60) return 'Just now';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} mins ago`;
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            return `${Math.floor(seconds / 86400)} days ago`;
+        }
+    </script>
+</body>
+</html>
