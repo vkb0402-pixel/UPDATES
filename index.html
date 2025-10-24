@@ -4,24 +4,82 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Updates - Short & Crisp News</title>
-    <link rel="icon" href="image-1.png">
+    <link rel="icon" href="image-2.png">
     <style>
+        :root {
+            --bg-color: #f2f2f2;
+            --card-bg: #fff;
+            --text-primary: #2c3e50;
+            --text-secondary: #34495e;
+            --text-meta: #7f8c8d;
+            --header-gradient-1: #4A90E2;
+            --header-gradient-2: #357ABD;
+            --border-color: #ecf0f1;
+            --accent-color: #4A90E2;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --card-bg: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-meta: #888;
+            --header-gradient-1: #2d5f8d;
+            --header-gradient-2: #1e4570;
+            --border-color: #404040;
+            --accent-color: #5fa3e8;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f2f2f2;
+            background: var(--bg-color);
             margin: 0;
             padding: 0;
+            transition: background 0.3s ease;
         }
+
         header {
-            background: linear-gradient(135deg, #4A90E2, #357ABD);
+            background: linear-gradient(135deg, var(--header-gradient-1), var(--header-gradient-2));
             color: #fff;
             padding: 1rem;
             text-align: center;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             box-shadow: 0 2px 10px rgba(74, 144, 226, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            margin-right: 0.5rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            justify-content: center;
+        }
+
         .logo {
             height: 45px;
             width: 45px;
@@ -29,12 +87,174 @@
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
+
         h1 {
             font-size: 1.9rem;
             font-weight: 600;
             margin: 0;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
+
+        /* Sidebar Menu */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100%;
+            background: var(--card-bg);
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
+            transition: left 0.3s ease;
+            z-index: 1000;
+            overflow-y: auto;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-header {
+            background: linear-gradient(135deg, var(--header-gradient-1), var(--header-gradient-2));
+            color: white;
+            padding: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: bold;
+        }
+
+        .sidebar-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-menu li {
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-menu a {
+            display: block;
+            padding: 1rem 1.5rem;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .sidebar-menu a:hover {
+            background: var(--bg-color);
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Modal */
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .modal-close {
+            float: right;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-meta);
+        }
+
+        .setting-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: 0.4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--accent-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
         .card-list {
             display: flex;
             flex-direction: column;
@@ -43,20 +263,24 @@
             margin: 2rem auto;
             padding: 0 1rem;
         }
+
         .news-card {
-            background: #fff;
+            background: var(--card-bg);
             border-radius: 14px;
-            box-shadow: 0 4px 18px rgba(30,40,100,0.08);
-            padding: 1.2rem 1rem 1rem 1rem;
+            box-shadow: 0 4px 18px rgba(30, 40, 100, 0.08);
+            padding: 1.2rem 1rem;
             display: flex;
             flex-direction: column;
             transition: all 0.3s ease;
-            border-left: 4px solid #4A90E2;
+            border-left: 4px solid var(--accent-color);
+            cursor: pointer;
         }
+
         .news-card:hover {
-            box-shadow: 0 8px 24px rgba(30,40,100,0.15);
+            box-shadow: 0 8px 24px rgba(30, 40, 100, 0.15);
             transform: translateY(-2px);
         }
+
         .news-image {
             width: 100%;
             object-fit: cover;
@@ -64,32 +288,35 @@
             margin-bottom: 0.75rem;
             max-height: 180px;
         }
+
         .news-title {
             font-size: 1.2rem;
-            color: #2c3e50;
+            color: var(--text-primary);
             font-weight: bold;
             margin-bottom: 0.5rem;
             line-height: 1.4;
         }
+
         .news-summary {
             font-size: 1rem;
-            color: #34495e;
+            color: var(--text-secondary);
             margin-bottom: 0.4rem;
             line-height: 1.5;
         }
+
         .news-meta {
             font-size: 0.9rem;
-            color: #7f8c8d;
+            color: var(--text-meta);
             margin-top: auto;
-            margin-bottom: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding-top: 0.5rem;
-            border-top: 1px solid #ecf0f1;
+            border-top: 1px solid var(--border-color);
         }
+
         .category-tag {
-            background: #4A90E2;
+            background: var(--accent-color);
             color: white;
             padding: 2px 8px;
             border-radius: 12px;
@@ -97,23 +324,31 @@
             font-weight: 500;
             text-transform: capitalize;
         }
+
+        .read-more {
+            color: var(--accent-color);
+            font-weight: 500;
+            margin-top: 0.5rem;
+            display: inline-block;
+        }
+
         .loading {
             text-align: center;
             padding: 2rem;
-            color: #7f8c8d;
+            color: var(--text-meta);
             font-size: 1.1rem;
         }
-        
+
         @media (max-width: 500px) {
-            .card-list { 
-                padding: 0.5rem; 
+            .card-list {
+                padding: 0.5rem;
                 margin: 1rem auto;
             }
-            header { 
-                padding: 0.8rem; 
+            header {
+                padding: 0.8rem;
             }
-            h1 { 
-                font-size: 1.5rem; 
+            h1 {
+                font-size: 1.5rem;
             }
             .logo {
                 height: 38px;
@@ -122,7 +357,6 @@
             }
             .news-card {
                 padding: 1rem;
-                margin-bottom: 0.5rem;
             }
             .news-title {
                 font-size: 1.1rem;
@@ -134,50 +368,221 @@
     </style>
 </head>
 <body>
+    <!-- Sidebar Menu -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">Menu</div>
+        <ul class="sidebar-menu">
+            <li><a href="#" id="settingsLink">⚙️ Settings</a></li>
+            <li><a href="#" id="aboutLink">ℹ️ About</a></li>
+            <li><a href="#" id="helpLink">❓ Help</a></li>
+        </ul>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Header -->
     <header>
-        <img src="image-2.png" alt="Updates Logo" class="logo">
-        <h1>Updates</h1>
+        <div class="header-left">
+            <button class="menu-btn" id="menuBtn">☰</button>
+        </div>
+        <div class="header-center">
+            <img src="image-2.png" alt="Updates Logo" class="logo">
+            <h1>Updates</h1>
+        </div>
+        <div style="width: 50px;"></div>
     </header>
-    
+
+    <!-- News Cards -->
     <div class="card-list">
         <div class="loading">Loading latest news...</div>
     </div>
 
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeSettings">&times;</span>
+            <div class="modal-header">Settings</div>
+            <div class="setting-item">
+                <span>Dark Mode</span>
+                <label class="switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <span>Notifications</span>
+                <label class="switch">
+                    <input type="checkbox" id="notifToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <span>Auto-refresh News</span>
+                <label class="switch">
+                    <input type="checkbox" id="autoRefreshToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Modal -->
+    <div class="modal" id="aboutModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeAbout">&times;</span>
+            <div class="modal-header">About Updates</div>
+            <p>Updates is a short and crisp news app that provides you with the latest news from India and around the world.</p>
+            <p><strong>Version:</strong> 1.0.0</p>
+            <p><strong>Developer:</strong> VKB Updates Team</p>
+            <p>Stay informed with real-time news updates powered by NewsData.io API.</p>
+        </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div class="modal" id="helpModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeHelp">&times;</span>
+            <div class="modal-header">Help & Support</div>
+            <p>Need help? Contact us:</p>
+            <p><strong>📧 Email:</strong> <a href="mailto:vivivictor.11111@gmail.com" style="color: var(--accent-color);">vivivictor.11111@gmail.com</a></p>
+            <p><strong>📞 Phone:</strong> <a href="tel:+919919800350" style="color: var(--accent-color);">99198 00350</a></p>
+            <p><strong>FAQ:</strong></p>
+            <ul>
+                <li><strong>How often is news updated?</strong> News is fetched in real-time from our API.</li>
+                <li><strong>Can I customize news sources?</strong> This feature is coming soon!</li>
+                <li><strong>Is this app free?</strong> Yes, completely free to use.</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Full Article Modal -->
+    <div class="modal" id="articleModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeArticle">&times;</span>
+            <div id="articleContent"></div>
+        </div>
+    </div>
+
     <script>
-        // Your NewsData.io API Key
-        const apiKey = 'pub_630bb6b01dd54da7b8a20061a5bd8224';
+        // Menu Toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('overlay');
+
+        menuBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        });
+
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+
+        // Modal Controls
+        const settingsModal = document.getElementById('settingsModal');
+        const aboutModal = document.getElementById('aboutModal');
+        const helpModal = document.getElementById('helpModal');
+        const articleModal = document.getElementById('articleModal');
+
+        document.getElementById('settingsLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            settingsModal.classList.add('active');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+
+        document.getElementById('aboutLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            aboutModal.classList.add('active');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+
+        document.getElementById('helpLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            helpModal.classList.add('active');
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        });
+
+        document.getElementById('closeSettings').addEventListener('click', () => {
+            settingsModal.classList.remove('active');
+        });
+
+        document.getElementById('closeAbout').addEventListener('click', () => {
+            aboutModal.classList.remove('active');
+        });
+
+        document.getElementById('closeHelp').addEventListener('click', () => {
+            helpModal.classList.remove('active');
+        });
+
+        document.getElementById('closeArticle').addEventListener('click', () => {
+            articleModal.classList.remove('active');
+        });
+
+        // Close modal on outside click
+        window.addEventListener('click', (e) => {
+            if (e.target === settingsModal) settingsModal.classList.remove('active');
+            if (e.target === aboutModal) aboutModal.classList.remove('active');
+            if (e.target === helpModal) helpModal.classList.remove('active');
+            if (e.target === articleModal) articleModal.classList.remove('active');
+        });
+
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const savedTheme = localStorage.getItem('theme') || 'light';
         
-        // API URL - fetching top news from India in English
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            darkModeToggle.checked = true;
+        }
+
+        darkModeToggle.addEventListener('change', () => {
+            if (darkModeToggle.checked) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'light');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+
+        // News API
+        const apiKey = 'pub_630bb6b01dd54da7b8a20061a5bd8224';
         const apiUrl = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=in&language=en`;
 
-        // Fetch news from API
+        let newsArticles = [];
+
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
                 const cardList = document.querySelector('.card-list');
-                cardList.innerHTML = ''; // Clear loading message
+                cardList.innerHTML = '';
                 
                 if (data.results && data.results.length > 0) {
-                    data.results.forEach(article => {
-                        // Create news card
+                    newsArticles = data.results;
+                    data.results.forEach((article, index) => {
                         const card = document.createElement('div');
                         card.className = 'news-card';
+                        card.setAttribute('data-index', index);
                         
-                        // Format date
                         const pubDate = new Date(article.pubDate);
                         const timeAgo = getTimeAgo(pubDate);
                         
-                        // Build card HTML
                         card.innerHTML = `
                             ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}">` : ''}
                             <div class="news-title">${article.title}</div>
-                            <div class="news-summary">${article.description || 'Read more for details...'}</div>
+                            <div class="news-summary">${article.description || 'Click to read more...'}</div>
+                            <span class="read-more">Read full article →</span>
                             <div class="news-meta">
                                 <span class="category-tag">${article.category ? article.category[0] : 'News'}</span>
                                 <span>${timeAgo}</span>
                             </div>
                         `;
                         
+                        card.addEventListener('click', () => showFullArticle(index));
                         cardList.appendChild(card);
                     });
                 } else {
@@ -189,8 +594,25 @@
                 document.querySelector('.card-list').innerHTML = 
                     '<div class="loading">Failed to load news. Please try again later.</div>';
             });
-        
-        // Function to calculate time ago
+
+        function showFullArticle(index) {
+            const article = newsArticles[index];
+            const articleContent = document.getElementById('articleContent');
+            
+            articleContent.innerHTML = `
+                ${article.image_url ? `<img src="${article.image_url}" style="width: 100%; border-radius: 8px; margin-bottom: 1rem;">` : ''}
+                <div class="modal-header">${article.title}</div>
+                <p style="color: var(--text-meta); font-size: 0.9rem; margin-bottom: 1rem;">
+                    ${article.category ? article.category.join(', ') : 'News'} • ${new Date(article.pubDate).toLocaleDateString()}
+                </p>
+                <p style="line-height: 1.6; color: var(--text-secondary);">${article.description || article.content || 'Full content not available.'}</p>
+                ${article.link ? `<p><a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none;">Read original article →</a></p>` : ''}
+                ${article.source_id ? `<p style="color: var(--text-meta); font-size: 0.85rem; margin-top: 1rem;">Source: ${article.source_id}</p>` : ''}
+            `;
+            
+            articleModal.classList.add('active');
+        }
+
         function getTimeAgo(date) {
             const now = new Date();
             const seconds = Math.floor((now - date) / 1000);
@@ -202,6 +624,5 @@
         }
     </script>
 </body>
-
 </html>
 
