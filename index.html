@@ -39,6 +39,7 @@
             background: var(--bg-color);
             margin: 0;
             padding: 0;
+            padding-bottom: 70px;
             transition: background 0.3s ease;
         }
 
@@ -93,6 +94,54 @@
             font-weight: 600;
             margin: 0;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--card-bg);
+            display: flex;
+            justify-content: space-around;
+            padding: 0.5rem 0;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: color 0.3s;
+            color: var(--text-meta);
+            text-decoration: none;
+        }
+
+        .nav-item.active {
+            color: var(--accent-color);
+        }
+
+        .nav-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .nav-label {
+            font-size: 0.75rem;
+        }
+
+        /* Page Container */
+        .page {
+            display: none;
+        }
+
+        .page.active {
+            display: block;
         }
 
         /* Sidebar Menu */
@@ -255,6 +304,7 @@
             transform: translateX(26px);
         }
 
+        /* Home Page News Cards */
         .card-list {
             display: flex;
             flex-direction: column;
@@ -332,6 +382,84 @@
             display: inline-block;
         }
 
+        /* Quick News Reels */
+        .reels-container {
+            position: relative;
+            height: calc(100vh - 140px);
+            overflow: hidden;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .reel {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--card-bg);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(100%);
+        }
+
+        .reel.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reel-image {
+            width: 100%;
+            max-height: 40%;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+        }
+
+        .reel-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .reel-content {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+
+        .reel-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: auto;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-meta);
+        }
+
+        .reel-nav {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem;
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .reel-btn {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
         .loading {
             text-align: center;
             padding: 2rem;
@@ -364,6 +492,15 @@
             .news-summary {
                 font-size: 0.95rem;
             }
+            .reel {
+                padding: 1.5rem;
+            }
+            .reel-title {
+                font-size: 1.3rem;
+            }
+            .reel-content {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -392,9 +529,45 @@
         <div style="width: 50px;"></div>
     </header>
 
-    <!-- News Cards -->
-    <div class="card-list">
-        <div class="loading">Loading latest news...</div>
+    <!-- Home Page -->
+    <div id="homePage" class="page active">
+        <div class="card-list" id="homeNewsList">
+            <div class="loading">Loading latest news...</div>
+        </div>
+    </div>
+
+    <!-- Quick News Page -->
+    <div id="quickPage" class="page">
+        <div class="reels-container" id="reelsContainer">
+            <div class="loading">Loading quick news...</div>
+        </div>
+        <div class="reel-nav" id="reelNav" style="display: none;">
+            <button class="reel-btn" id="prevReel">⬆ Previous</button>
+            <button class="reel-btn" id="nextReel">Next ⬇</button>
+        </div>
+    </div>
+
+    <!-- Headlines Page -->
+    <div id="headlinesPage" class="page">
+        <div class="card-list" id="headlinesList">
+            <div class="loading">Loading headlines...</div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <div class="bottom-nav">
+        <a href="#" class="nav-item active" data-page="homePage">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-label">Home</div>
+        </a>
+        <a href="#" class="nav-item" data-page="quickPage">
+            <div class="nav-icon">⚡</div>
+            <div class="nav-label">Quick</div>
+        </a>
+        <a href="#" class="nav-item" data-page="headlinesPage">
+            <div class="nav-icon">📰</div>
+            <div class="nav-label">Headlines</div>
+        </a>
     </div>
 
     <!-- Settings Modal -->
@@ -432,7 +605,7 @@
             <span class="modal-close" id="closeAbout">&times;</span>
             <div class="modal-header">About Updates</div>
             <p>Updates is a short and crisp news app that provides you with the latest news from India and around the world.</p>
-            <p><strong>Version:</strong> 1.0.0</p>
+            <p><strong>Version:</strong> 2.0.0</p>
             <p><strong>Developer:</strong> VKB Updates Team</p>
             <p>Stay informed with real-time news updates powered by NewsData.io API.</p>
         </div>
@@ -464,6 +637,13 @@
     </div>
 
     <script>
+        // API Configuration
+        const apiKey = 'pub_630bb6b01dd54da7b8a20061a5bd8224';
+        let newsArticles = [];
+        let quickArticles = [];
+        let headlinesArticles = [];
+        let currentReelIndex = 0;
+
         // Menu Toggle
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('sidebar');
@@ -477,6 +657,32 @@
         overlay.addEventListener('click', () => {
             sidebar.classList.remove('open');
             overlay.classList.remove('active');
+        });
+
+        // Bottom Navigation
+        const navItems = document.querySelectorAll('.nav-item');
+        const pages = document.querySelectorAll('.page');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetPage = item.dataset.page;
+                
+                // Remove active class from all
+                navItems.forEach(nav => nav.classList.remove('active'));
+                pages.forEach(page => page.classList.remove('active'));
+                
+                // Add active class to current
+                item.classList.add('active');
+                document.getElementById(targetPage).classList.add('active');
+                
+                // Load content if needed
+                if (targetPage === 'quickPage' && quickArticles.length === 0) {
+                    loadQuickNews();
+                } else if (targetPage === 'headlinesPage' && headlinesArticles.length === 0) {
+                    loadHeadlines();
+                }
+            });
         });
 
         // Modal Controls
@@ -522,7 +728,6 @@
             articleModal.classList.remove('active');
         });
 
-        // Close modal on outside click
         window.addEventListener('click', (e) => {
             if (e.target === settingsModal) settingsModal.classList.remove('active');
             if (e.target === aboutModal) aboutModal.classList.remove('active');
@@ -549,54 +754,147 @@
             }
         });
 
-        // News API
-        const apiKey = 'pub_630bb6b01dd54da7b8a20061a5bd8224';
-        const apiUrl = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=in&language=en`;
+        // Load Home News (50 articles)
+        function loadHomeNews() {
+            const apiUrl = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=in&language=en`;
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const cardList = document.getElementById('homeNewsList');
+                    cardList.innerHTML = '';
+                    
+                    if (data.results && data.results.length > 0) {
+                        newsArticles = data.results.slice(0, 50);
+                        newsArticles.forEach((article, index) => {
+                            const card = document.createElement('div');
+                            card.className = 'news-card';
+                            
+                            const pubDate = new Date(article.pubDate);
+                            const timeAgo = getTimeAgo(pubDate);
+                            
+                            card.innerHTML = `
+                                ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}">` : ''}
+                                <div class="news-title">${article.title}</div>
+                                <div class="news-summary">${article.description || 'Click to read more...'}</div>
+                                <span class="read-more">Read full article →</span>
+                                <div class="news-meta">
+                                    <span class="category-tag">${article.category ? article.category[0] : 'News'}</span>
+                                    <span>${timeAgo}</span>
+                                </div>
+                            `;
+                            
+                            card.addEventListener('click', () => showFullArticle(article));
+                            cardList.appendChild(card);
+                        });
+                    } else {
+                        cardList.innerHTML = '<div class="loading">No news available at the moment.</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching news:', error);
+                    document.getElementById('homeNewsList').innerHTML = 
+                        '<div class="loading">Failed to load news. Please try again later.</div>';
+                });
+        }
 
-        let newsArticles = [];
+        // Load Quick News (50 reel-style articles)
+        function loadQuickNews() {
+            const apiUrl = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=in&language=en`;
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('reelsContainer');
+                    container.innerHTML = '';
+                    
+                    if (data.results && data.results.length > 0) {
+                        quickArticles = data.results.slice(0, 50);
+                        quickArticles.forEach((article, index) => {
+                            const reel = document.createElement('div');
+                            reel.className = 'reel' + (index === 0 ? ' active' : '');
+                            
+                            reel.innerHTML = `
+                                ${article.image_url ? `<img class="reel-image" src="${article.image_url}" alt="${article.title}">` : ''}
+                                <div class="reel-title">${article.title}</div>
+                                <div class="reel-content">${article.description || 'Swipe to read more stories...'}</div>
+                                <div class="reel-meta">
+                                    <span>${article.category ? article.category[0] : 'News'}</span>
+                                    <span>${index + 1}/${quickArticles.length}</span>
+                                </div>
+                            `;
+                            
+                            container.appendChild(reel);
+                        });
+                        
+                        document.getElementById('reelNav').style.display = 'flex';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching quick news:', error);
+                });
+        }
 
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                const cardList = document.querySelector('.card-list');
-                cardList.innerHTML = '';
-                
-                if (data.results && data.results.length > 0) {
-                    newsArticles = data.results;
-                    data.results.forEach((article, index) => {
-                        const card = document.createElement('div');
-                        card.className = 'news-card';
-                        card.setAttribute('data-index', index);
-                        
-                        const pubDate = new Date(article.pubDate);
-                        const timeAgo = getTimeAgo(pubDate);
-                        
-                        card.innerHTML = `
-                            ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}">` : ''}
-                            <div class="news-title">${article.title}</div>
-                            <div class="news-summary">${article.description || 'Click to read more...'}</div>
-                            <span class="read-more">Read full article →</span>
-                            <div class="news-meta">
-                                <span class="category-tag">${article.category ? article.category[0] : 'News'}</span>
-                                <span>${timeAgo}</span>
-                            </div>
-                        `;
-                        
-                        card.addEventListener('click', () => showFullArticle(index));
-                        cardList.appendChild(card);
-                    });
-                } else {
-                    cardList.innerHTML = '<div class="loading">No news available at the moment.</div>';
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching news:', error);
-                document.querySelector('.card-list').innerHTML = 
-                    '<div class="loading">Failed to load news. Please try again later.</div>';
-            });
+        // Load Headlines (11 world news)
+        function loadHeadlines() {
+            const apiUrl = `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=top`;
+            
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const cardList = document.getElementById('headlinesList');
+                    cardList.innerHTML = '';
+                    
+                    if (data.results && data.results.length > 0) {
+                        headlinesArticles = data.results.slice(0, 11);
+                        headlinesArticles.forEach((article) => {
+                            const card = document.createElement('div');
+                            card.className = 'news-card';
+                            
+                            const pubDate = new Date(article.pubDate);
+                            const timeAgo = getTimeAgo(pubDate);
+                            
+                            card.innerHTML = `
+                                ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}">` : ''}
+                                <div class="news-title">${article.title}</div>
+                                <div class="news-summary">${article.description || ''}</div>
+                                ${article.link ? `<a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">Read original source →</a>` : ''}
+                                <div class="news-meta">
+                                    <span class="category-tag">${article.source_id || 'World'}</span>
+                                    <span>${timeAgo}</span>
+                                </div>
+                            `;
+                            
+                            cardList.appendChild(card);
+                        });
+                    } else {
+                        cardList.innerHTML = '<div class="loading">No headlines available.</div>';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching headlines:', error);
+                });
+        }
 
-        function showFullArticle(index) {
-            const article = newsArticles[index];
+        // Reel Navigation
+        document.getElementById('prevReel').addEventListener('click', () => {
+            if (currentReelIndex > 0) {
+                document.querySelectorAll('.reel')[currentReelIndex].classList.remove('active');
+                currentReelIndex--;
+                document.querySelectorAll('.reel')[currentReelIndex].classList.add('active');
+            }
+        });
+
+        document.getElementById('nextReel').addEventListener('click', () => {
+            if (currentReelIndex < quickArticles.length - 1) {
+                document.querySelectorAll('.reel')[currentReelIndex].classList.remove('active');
+                currentReelIndex++;
+                document.querySelectorAll('.reel')[currentReelIndex].classList.add('active');
+            }
+        });
+
+        // Show Full Article
+        function showFullArticle(article) {
             const articleContent = document.getElementById('articleContent');
             
             articleContent.innerHTML = `
@@ -622,7 +920,11 @@
             if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
             return `${Math.floor(seconds / 86400)} days ago`;
         }
+
+        // Initialize
+        loadHomeNews();
     </script>
 </body>
 </html>
+
 
