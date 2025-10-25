@@ -94,6 +94,25 @@
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
+        .language-selector {
+            width: 40px;
+        }
+
+        .language-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .language-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -487,6 +506,7 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">Menu</div>
         <ul class="sidebar-menu">
+            <li><a href="#" id="languageLink">🌐 Language</a></li>
             <li><a href="#" id="settingsLink">⚙️ Settings</a></li>
             <li><a href="#" id="aboutLink">ℹ️ About</a></li>
             <li><a href="#" id="helpLink">❓ Help</a></li>
@@ -503,7 +523,15 @@
             <img src="image-2.png" alt="Updates Logo" class="logo">
             <h1>Updates</h1>
         </div>
-        <div style="width: 50px;"></div>
+        <div class="language-selector">
+            <select class="language-btn" id="languageSelect">
+                <option value="en">EN</option>
+                <option value="hi">हिं</option>
+                <option value="es">ES</option>
+                <option value="fr">FR</option>
+                <option value="de">DE</option>
+            </select>
+        </div>
     </header>
 
     <div id="homePage" class="page active">
@@ -539,6 +567,33 @@
         </a>
     </div>
 
+    <div class="modal" id="languageModal">
+        <div class="modal-content">
+            <span class="modal-close" id="closeLanguage">&times;</span>
+            <div class="modal-header">Select Language</div>
+            <div class="setting-item" style="cursor: pointer;" onclick="changeLanguage('en')">
+                <span>English</span>
+                <span id="checkEn" style="display: none;">✓</span>
+            </div>
+            <div class="setting-item" style="cursor: pointer;" onclick="changeLanguage('hi')">
+                <span>हिन्दी</span>
+                <span id="checkHi" style="display: none;">✓</span>
+            </div>
+            <div class="setting-item" style="cursor: pointer;" onclick="changeLanguage('es')">
+                <span>Español</span>
+                <span id="checkEs" style="display: none;">✓</span>
+            </div>
+            <div class="setting-item" style="cursor: pointer;" onclick="changeLanguage('fr')">
+                <span>Français</span>
+                <span id="checkFr" style="display: none;">✓</span>
+            </div>
+            <div class="setting-item" style="cursor: pointer;" onclick="changeLanguage('de')">
+                <span>Deutsch</span>
+                <span id="checkDe" style="display: none;">✓</span>
+            </div>
+        </div>
+    </div>
+
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <span class="modal-close" id="closeSettings">&times;</span>
@@ -571,10 +626,16 @@
         <div class="modal-content">
             <span class="modal-close" id="closeAbout">&times;</span>
             <div class="modal-header">About Updates</div>
-            <p>Updates is a short and crisp news app that provides you with the latest news from India and around the world.</p>
-            <p><strong>Version:</strong> 3.0.0</p>
+            <p>Updates is a multilingual news aggregator providing you with the latest news from India and around the world in 5 languages.</p>
+            <p><strong>Version:</strong> 4.0.0</p>
             <p><strong>Developer:</strong> VKB Updates Team</p>
-            <p>Stay informed with real-time news updates powered by multiple news APIs.</p>
+            <p><strong>News Sources:</strong></p>
+            <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
+                <li>NewsData.io - <a href="https://newsdata.io" target="_blank" style="color: var(--accent-color);">newsdata.io</a></li>
+                <li>NewsAPI.org - <a href="https://newsapi.org" target="_blank" style="color: var(--accent-color);">newsapi.org</a></li>
+                <li>TheNewsAPI - <a href="https://thenewsapi.com" target="_blank" style="color: var(--accent-color);">thenewsapi.com</a></li>
+            </ul>
+            <p style="margin-top: 1rem;"><strong>Languages:</strong> English, हिन्दी, Español, Français, Deutsch</p>
         </div>
     </div>
 
@@ -587,9 +648,10 @@
             <p><strong>📞 Phone:</strong> <a href="tel:+919919800350" style="color: var(--accent-color);">99198 00350</a></p>
             <p><strong>FAQ:</strong></p>
             <ul style="padding-left: 1.5rem;">
-                <li><strong>How often is news updated?</strong> News is fetched in real-time from our APIs.</li>
+                <li><strong>How often is news updated?</strong> News is fetched in real-time from 3 APIs.</li>
                 <li><strong>Can I customize news sources?</strong> This feature is coming soon!</li>
                 <li><strong>Is this app free?</strong> Yes, completely free to use.</li>
+                <li><strong>How to change language?</strong> Use the language selector in the header or menu.</li>
             </ul>
         </div>
     </div>
@@ -602,16 +664,27 @@
     </div>
 
     <script>
-        // Dual API Configuration for Maximum Coverage
+        // Triple API Configuration with Language Support
         const API_KEYS = {
             newsData: 'pub_630bb6b01dd54da7b8a20061a5bd8224',
-            newsApi: 'f20f53e207ed497dace6c1d4a47daec9'
+            newsApi: 'f20f53e207ed497dace6c1d4a47daec9',
+            theNewsApi: 'rGf2CKABjiCR1SBm30vdPV2Fb63gbXsMcCFbnDxK'
         };
         
         let allArticles = [];
         let currentReelIndex = 0;
         let touchStartY = 0;
         let touchEndY = 0;
+        let currentLanguage = 'en';
+
+        // Language mapping
+        const LANG_MAP = {
+            'en': 'en',
+            'hi': 'hi',
+            'es': 'es',
+            'fr': 'fr',
+            'de': 'de'
+        };
 
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('sidebar');
@@ -647,6 +720,15 @@
         const aboutModal = document.getElementById('aboutModal');
         const helpModal = document.getElementById('helpModal');
         const articleModal = document.getElementById('articleModal');
+        const languageModal = document.getElementById('languageModal');
+
+        document.getElementById('languageLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            languageModal.classList.add('active');
+            updateLanguageChecks();
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        });
 
         document.getElementById('settingsLink').addEventListener('click', (e) => {
             e.preventDefault();
@@ -667,6 +749,10 @@
             helpModal.classList.add('active');
             sidebar.classList.remove('open');
             overlay.classList.remove('active');
+        });
+
+        document.getElementById('closeLanguage').addEventListener('click', () => {
+            languageModal.classList.remove('active');
         });
 
         document.getElementById('closeSettings').addEventListener('click', () => {
@@ -690,7 +776,29 @@
             if (e.target === aboutModal) aboutModal.classList.remove('active');
             if (e.target === helpModal) helpModal.classList.remove('active');
             if (e.target === articleModal) articleModal.classList.remove('active');
+            if (e.target === languageModal) languageModal.classList.remove('active');
         });
+
+        // Language selector change
+        document.getElementById('languageSelect').addEventListener('change', (e) => {
+            changeLanguage(e.target.value);
+        });
+
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            document.getElementById('languageSelect').value = lang;
+            updateLanguageChecks();
+            languageModal.classList.remove('active');
+            fetchAllNews();
+        }
+
+        function updateLanguageChecks() {
+            ['En', 'Hi', 'Es', 'Fr', 'De'].forEach(lang => {
+                document.getElementById(`check${lang}`).style.display = 'none';
+            });
+            const langMap = { 'en': 'En', 'hi': 'Hi', 'es': 'Es', 'fr': 'Fr', 'de': 'De' };
+            document.getElementById(`check${langMap[currentLanguage]}`).style.display = 'inline';
+        }
 
         const darkModeToggle = document.getElementById('darkModeToggle');
         let savedTheme = 'light';
@@ -719,26 +827,40 @@
             }
         });
 
-        // Fetch news from BOTH APIs and combine
+        // Fetch news from ALL THREE APIs with language support and deduplication
         async function fetchAllNews() {
             try {
-                console.log('Fetching news from multiple sources...');
+                console.log(`Fetching news in ${currentLanguage} from multiple sources...`);
+                
+                const lang = LANG_MAP[currentLanguage];
                 
                 // Fetch from NewsData.io
-                const newsDataPromise = fetch(`https://newsdata.io/api/1/news?apikey=${API_KEYS.newsData}&country=in&language=en`)
+                const newsDataPromise = fetch(`https://newsdata.io/api/1/news?apikey=${API_KEYS.newsData}&language=${lang}`)
                     .then(res => res.json())
                     .catch(err => ({ results: [] }));
                 
-                // Fetch from NewsAPI.org
-                const newsApiPromise = fetch(`https://newsapi.org/v2/top-headlines?country=in&apiKey=${API_KEYS.newsApi}`)
-                    .then(res => res.json())
-                    .catch(err => ({ articles: [] }));
+                // Fetch from NewsAPI.org (only supports en, de, fr, es)
+                const newsApiPromise = ['en', 'de', 'fr', 'es'].includes(lang)
+                    ? fetch(`https://newsapi.org/v2/top-headlines?language=${lang}&apiKey=${API_KEYS.newsApi}`)
+                        .then(res => res.json())
+                        .catch(err => ({ articles: [] }))
+                    : Promise.resolve({ articles: [] });
                 
-                // Wait for both APIs
-                const [newsDataResponse, newsApiResponse] = await Promise.all([newsDataPromise, newsApiPromise]);
+                // Fetch from TheNewsAPI.com
+                const theNewsApiPromise = fetch(`https://api.thenewsapi.com/v1/news/top?api_token=${API_KEYS.theNewsApi}&language=${lang}&limit=50`)
+                    .then(res => res.json())
+                    .catch(err => ({ data: [] }));
+                
+                // Wait for all APIs
+                const [newsDataResponse, newsApiResponse, theNewsApiResponse] = await Promise.all([
+                    newsDataPromise, 
+                    newsApiPromise,
+                    theNewsApiPromise
+                ]);
                 
                 console.log('NewsData.io Response:', newsDataResponse);
                 console.log('NewsAPI.org Response:', newsApiResponse);
+                console.log('TheNewsAPI Response:', theNewsApiResponse);
                 
                 // Normalize NewsData.io articles
                 const newsDataArticles = (newsDataResponse.results || []).map(article => ({
@@ -748,7 +870,7 @@
                     image_url: article.image_url,
                     link: article.link,
                     pubDate: article.pubDate,
-                    source_id: article.source_id,
+                    source_id: article.source_id || 'NewsData',
                     category: article.category || ['general']
                 }));
                 
@@ -760,16 +882,30 @@
                     image_url: article.urlToImage,
                     link: article.url,
                     pubDate: article.publishedAt,
-                    source_id: article.source.name,
+                    source_id: article.source?.name || 'NewsAPI',
                     category: ['general']
                 }));
                 
-                // Combine and filter articles
-                allArticles = [...newsDataArticles, ...newsApiArticles]
-                    .filter(a => a.title && a.description)
-                    .slice(0, 100); // Get up to 100 articles total
+                // Normalize TheNewsAPI articles
+                const theNewsApiArticles = (theNewsApiResponse.data || []).map(article => ({
+                    title: article.title,
+                    description: article.description,
+                    content: article.snippet,
+                    image_url: article.image_url,
+                    link: article.url,
+                    pubDate: article.published_at,
+                    source_id: article.source || 'TheNewsAPI',
+                    category: article.categories || ['general']
+                }));
                 
-                console.log(`Total articles combined: ${allArticles.length}`);
+                // Combine all articles
+                const combined = [...newsDataArticles, ...newsApiArticles, ...theNewsApiArticles];
+                
+                // Remove duplicates based on title similarity
+                allArticles = removeDuplicates(combined)
+                    .filter(a => a.title && a.description);
+                
+                console.log(`Total unique articles: ${allArticles.length}`);
                 
                 if (allArticles.length > 0) {
                     distributeArticles();
@@ -782,36 +918,37 @@
             }
         }
 
+        // Remove duplicate articles based on title
+        function removeDuplicates(articles) {
+            const seen = new Set();
+            return articles.filter(article => {
+                const titleLower = article.title.toLowerCase().trim();
+                if (seen.has(titleLower)) {
+                    return false;
+                }
+                seen.add(titleLower);
+                return true;
+            });
+        }
+
         function distributeArticles() {
             const total = allArticles.length;
             
-            if (total < 3) {
-                showError('Not enough articles available. Please try again later.');
-                return;
-            }
-
-            let homeCount, quickStart, quickEnd, headlinesStart;
+            console.log(`Distributing ${total} articles...`);
             
-            if (total >= 60) {
-                homeCount = 40;
-                quickStart = 40;
-                quickEnd = 70;
-                headlinesStart = 70;
-            } else if (total >= 30) {
-                homeCount = Math.floor(total * 0.5);
-                quickStart = homeCount;
-                quickEnd = homeCount + Math.floor(total * 0.35);
-                headlinesStart = quickEnd;
-            } else {
-                homeCount = Math.floor(total * 0.6);
-                quickStart = homeCount;
-                quickEnd = homeCount + Math.floor(total * 0.3);
-                headlinesStart = quickEnd;
-            }
-
-            loadHomeNews(homeCount);
-            loadQuickNews(quickStart, quickEnd);
-            loadHeadlines(headlinesStart, total);
+            // Ensure minimum articles per section
+            const homeCount = Math.max(20, Math.floor(total * 0.4));
+            const quickCount = Math.max(20, Math.floor(total * 0.4));
+            const headlinesCount = Math.max(10, total - homeCount - quickCount);
+            
+            // Adjust if we don't have enough total articles
+            const actualHome = Math.min(homeCount, total);
+            const actualQuick = Math.min(quickCount, Math.max(0, total - actualHome));
+            const actualHeadlines = Math.max(0, total - actualHome - actualQuick);
+            
+            loadHomeNews(actualHome);
+            loadQuickNews(actualHome, actualHome + actualQuick);
+            loadHeadlines(actualHome + actualQuick, total);
         }
 
         function loadHomeNews(count) {
@@ -853,7 +990,7 @@
             const quickArticles = allArticles.slice(startIdx, endIdx);
             
             if (quickArticles.length === 0) {
-                container.innerHTML = '<div class="error-message">No articles available for Quick News section.<br><br>Try refreshing the page later.</div>';
+                container.innerHTML = '<div class="error-message">No articles available for Quick News section.</div>';
                 return;
             }
             
@@ -977,6 +1114,8 @@
             return `${Math.floor(seconds / 86400)} days ago`;
         }
 
+        // Initialize
+        updateLanguageChecks();
         fetchAllNews();
     </script>
 </body>
