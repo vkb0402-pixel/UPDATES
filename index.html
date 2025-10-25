@@ -1,7 +1,3 @@
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -36,15 +32,16 @@
 
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
             background: var(--bg-color);
-            margin: 0;
-            padding: 0;
             padding-bottom: 70px;
             transition: background 0.3s ease;
+            overflow-x: hidden;
         }
 
         header {
@@ -74,8 +71,6 @@
             cursor: pointer;
             padding: 0.5rem;
             margin-right: 0.5rem;
-            display: flex;
-            align-items: center;
         }
 
         .header-center {
@@ -96,11 +91,9 @@
         h1 {
             font-size: 1.9rem;
             font-weight: 600;
-            margin: 0;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
-        /* Bottom Navigation */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -139,7 +132,6 @@
             font-size: 0.75rem;
         }
 
-        /* Page Container */
         .page {
             display: none;
         }
@@ -148,7 +140,6 @@
             display: block;
         }
 
-        /* Sidebar Menu */
         .sidebar {
             position: fixed;
             top: 0;
@@ -176,8 +167,6 @@
 
         .sidebar-menu {
             list-style: none;
-            padding: 0;
-            margin: 0;
         }
 
         .sidebar-menu li {
@@ -211,7 +200,6 @@
             display: block;
         }
 
-        /* Modal */
         .modal {
             position: fixed;
             top: 0;
@@ -308,7 +296,6 @@
             transform: translateX(26px);
         }
 
-        /* Home Page News Cards */
         .card-list {
             display: flex;
             flex-direction: column;
@@ -323,8 +310,6 @@
             border-radius: 14px;
             box-shadow: 0 4px 18px rgba(30, 40, 100, 0.08);
             padding: 1.2rem 1rem;
-            display: flex;
-            flex-direction: column;
             transition: all 0.3s ease;
             border-left: 4px solid var(--accent-color);
             cursor: pointer;
@@ -337,10 +322,11 @@
 
         .news-image {
             width: 100%;
+            height: 180px;
             object-fit: cover;
             border-radius: 8px;
             margin-bottom: 0.75rem;
-            max-height: 180px;
+            background: var(--border-color);
         }
 
         .news-title {
@@ -361,12 +347,12 @@
         .news-meta {
             font-size: 0.9rem;
             color: var(--text-meta);
-            margin-top: auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding-top: 0.5rem;
             border-top: 1px solid var(--border-color);
+            margin-top: 0.5rem;
         }
 
         .category-tag {
@@ -379,20 +365,14 @@
             text-transform: capitalize;
         }
 
-        .read-more {
-            color: var(--accent-color);
-            font-weight: 500;
-            margin-top: 0.5rem;
-            display: inline-block;
-        }
-
-        /* Quick News Reels */
         .reels-container {
             position: relative;
             height: calc(100vh - 140px);
             overflow: hidden;
             max-width: 600px;
             margin: 0 auto;
+            background: var(--bg-color);
+            touch-action: pan-y;
         }
 
         .reel {
@@ -402,24 +382,26 @@
             background: var(--card-bg);
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            padding: 2rem;
+            padding: 2rem 1.5rem;
             opacity: 0;
             transition: opacity 0.3s ease, transform 0.3s ease;
             transform: translateY(100%);
+            overflow-y: auto;
         }
 
         .reel.active {
             opacity: 1;
             transform: translateY(0);
+            z-index: 2;
         }
 
         .reel-image {
             width: 100%;
-            max-height: 40%;
+            height: 250px;
             object-fit: cover;
             border-radius: 12px;
             margin-bottom: 1.5rem;
+            background: var(--border-color);
         }
 
         .reel-title {
@@ -427,6 +409,7 @@
             font-weight: bold;
             color: var(--text-primary);
             margin-bottom: 1rem;
+            line-height: 1.3;
         }
 
         .reel-content {
@@ -434,34 +417,28 @@
             color: var(--text-secondary);
             line-height: 1.6;
             margin-bottom: 1rem;
+            flex: 1;
         }
 
         .reel-meta {
             display: flex;
             justify-content: space-between;
-            margin-top: auto;
             padding-top: 1rem;
             border-top: 1px solid var(--border-color);
             color: var(--text-meta);
+            font-size: 0.9rem;
         }
 
-        .reel-nav {
-            display: flex;
-            justify-content: space-between;
-            padding: 1rem;
+        .reel-indicator {
             position: absolute;
-            bottom: 0;
-            width: 100%;
-        }
-
-        .reel-btn {
-            background: var(--accent-color);
+            top: 1rem;
+            right: 1rem;
+            background: rgba(0, 0, 0, 0.6);
             color: white;
-            border: none;
-            padding: 0.7rem 1.5rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 1rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            z-index: 3;
         }
 
         .loading {
@@ -469,6 +446,14 @@
             padding: 2rem;
             color: var(--text-meta);
             font-size: 1.1rem;
+        }
+
+        .error-message {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--text-meta);
+            font-size: 1rem;
+            line-height: 1.6;
         }
 
         @media (max-width: 500px) {
@@ -485,31 +470,20 @@
             .logo {
                 height: 38px;
                 width: 38px;
-                margin-right: 8px;
-            }
-            .news-card {
-                padding: 1rem;
-            }
-            .news-title {
-                font-size: 1.1rem;
-            }
-            .news-summary {
-                font-size: 0.95rem;
             }
             .reel {
-                padding: 1.5rem;
+                padding: 1.5rem 1rem;
             }
             .reel-title {
                 font-size: 1.3rem;
             }
-            .reel-content {
-                font-size: 1rem;
+            .reel-image {
+                height: 200px;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Sidebar Menu -->
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">Menu</div>
         <ul class="sidebar-menu">
@@ -521,7 +495,6 @@
 
     <div class="overlay" id="overlay"></div>
 
-    <!-- Header -->
     <header>
         <div class="header-left">
             <button class="menu-btn" id="menuBtn">☰</button>
@@ -533,32 +506,24 @@
         <div style="width: 50px;"></div>
     </header>
 
-    <!-- Home Page -->
     <div id="homePage" class="page active">
         <div class="card-list" id="homeNewsList">
             <div class="loading">Loading latest news...</div>
         </div>
     </div>
 
-    <!-- Quick News Page -->
     <div id="quickPage" class="page">
         <div class="reels-container" id="reelsContainer">
             <div class="loading">Loading quick news...</div>
         </div>
-        <div class="reel-nav" id="reelNav" style="display: none;">
-            <button class="reel-btn" id="prevReel">⬆ Previous</button>
-            <button class="reel-btn" id="nextReel">Next ⬇</button>
-        </div>
     </div>
 
-    <!-- Headlines Page -->
     <div id="headlinesPage" class="page">
         <div class="card-list" id="headlinesList">
             <div class="loading">Loading headlines...</div>
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="bottom-nav">
         <a href="#" class="nav-item active" data-page="homePage">
             <div class="nav-icon">🏠</div>
@@ -574,7 +539,6 @@
         </a>
     </div>
 
-    <!-- Settings Modal -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <span class="modal-close" id="closeSettings">&times;</span>
@@ -603,19 +567,17 @@
         </div>
     </div>
 
-    <!-- About Modal -->
     <div class="modal" id="aboutModal">
         <div class="modal-content">
             <span class="modal-close" id="closeAbout">&times;</span>
             <div class="modal-header">About Updates</div>
             <p>Updates is a short and crisp news app that provides you with the latest news from India and around the world.</p>
-            <p><strong>Version:</strong> 2.0.0</p>
+            <p><strong>Version:</strong> 3.0.0</p>
             <p><strong>Developer:</strong> VKB Updates Team</p>
-            <p>Stay informed with real-time news updates powered by NewsData.io API.</p>
+            <p>Stay informed with real-time news updates powered by multiple news APIs.</p>
         </div>
     </div>
 
-    <!-- Help Modal -->
     <div class="modal" id="helpModal">
         <div class="modal-content">
             <span class="modal-close" id="closeHelp">&times;</span>
@@ -624,15 +586,14 @@
             <p><strong>📧 Email:</strong> <a href="mailto:vivivictor.11111@gmail.com" style="color: var(--accent-color);">vivivictor.11111@gmail.com</a></p>
             <p><strong>📞 Phone:</strong> <a href="tel:+919919800350" style="color: var(--accent-color);">99198 00350</a></p>
             <p><strong>FAQ:</strong></p>
-            <ul>
-                <li><strong>How often is news updated?</strong> News is fetched in real-time from our API.</li>
+            <ul style="padding-left: 1.5rem;">
+                <li><strong>How often is news updated?</strong> News is fetched in real-time from our APIs.</li>
                 <li><strong>Can I customize news sources?</strong> This feature is coming soon!</li>
                 <li><strong>Is this app free?</strong> Yes, completely free to use.</li>
             </ul>
         </div>
     </div>
 
-    <!-- Full Article Modal -->
     <div class="modal" id="articleModal">
         <div class="modal-content">
             <span class="modal-close" id="closeArticle">&times;</span>
@@ -641,14 +602,17 @@
     </div>
 
     <script>
-        // API Configuration
-        const apiKey = 'pub_630bb6b01dd54da7b8a20061a5bd8224';
-        let newsArticles = [];
-        let quickArticles = [];
-        let headlinesArticles = [];
+        // Dual API Configuration for Maximum Coverage
+        const API_KEYS = {
+            newsData: 'pub_630bb6b01dd54da7b8a20061a5bd8224',
+            newsApi: 'f20f53e207ed497dace6c1d4a47daec9'
+        };
+        
+        let allArticles = [];
         let currentReelIndex = 0;
+        let touchStartY = 0;
+        let touchEndY = 0;
 
-        // Menu Toggle
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
@@ -663,7 +627,6 @@
             overlay.classList.remove('active');
         });
 
-        // Bottom Navigation
         const navItems = document.querySelectorAll('.nav-item');
         const pages = document.querySelectorAll('.page');
 
@@ -672,24 +635,14 @@
                 e.preventDefault();
                 const targetPage = item.dataset.page;
                 
-                // Remove active class from all
                 navItems.forEach(nav => nav.classList.remove('active'));
                 pages.forEach(page => page.classList.remove('active'));
                 
-                // Add active class to current
                 item.classList.add('active');
                 document.getElementById(targetPage).classList.add('active');
-                
-                // Load content if needed
-                if (targetPage === 'quickPage' && quickArticles.length === 0) {
-                    loadQuickNews();
-                } else if (targetPage === 'headlinesPage' && headlinesArticles.length === 0) {
-                    loadHeadlines();
-                }
             });
         });
 
-        // Modal Controls
         const settingsModal = document.getElementById('settingsModal');
         const aboutModal = document.getElementById('aboutModal');
         const helpModal = document.getElementById('helpModal');
@@ -739,9 +692,13 @@
             if (e.target === articleModal) articleModal.classList.remove('active');
         });
 
-        // Dark Mode Toggle
         const darkModeToggle = document.getElementById('darkModeToggle');
-        const savedTheme = localStorage.getItem('theme') || 'light';
+        let savedTheme = 'light';
+        try {
+            savedTheme = sessionStorage.getItem('theme') || 'light';
+        } catch (e) {
+            console.log('Session storage not available');
+        }
         
         if (savedTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -751,158 +708,253 @@
         darkModeToggle.addEventListener('change', () => {
             if (darkModeToggle.checked) {
                 document.documentElement.setAttribute('data-theme', 'dark');
-                localStorage.setItem('theme', 'dark');
+                try {
+                    sessionStorage.setItem('theme', 'dark');
+                } catch (e) {}
             } else {
                 document.documentElement.setAttribute('data-theme', 'light');
-                localStorage.setItem('theme', 'light');
+                try {
+                    sessionStorage.setItem('theme', 'light');
+                } catch (e) {}
             }
         });
 
-        // Load Home News (50 articles)
-        function loadHomeNews() {
-            const apiUrl = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=in&language=en`;
-            
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const cardList = document.getElementById('homeNewsList');
-                    cardList.innerHTML = '';
-                    
-                    if (data.results && data.results.length > 0) {
-                        newsArticles = data.results.slice(0, 50);
-                        newsArticles.forEach((article, index) => {
-                            const card = document.createElement('div');
-                            card.className = 'news-card';
-                            
-                            const pubDate = new Date(article.pubDate);
-                            const timeAgo = getTimeAgo(pubDate);
-                            
-                            card.innerHTML = `
-                                ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}">` : ''}
-                                <div class="news-title">${article.title}</div>
-                                <div class="news-summary">${article.description || 'Click to read more...'}</div>
-                                <span class="read-more">Read full article →</span>
-                                <div class="news-meta">
-                                    <span class="category-tag">${article.category ? article.category[0] : 'News'}</span>
-                                    <span>${timeAgo}</span>
-                                </div>
-                            `;
-                            
-                            card.addEventListener('click', () => showFullArticle(article));
-                            cardList.appendChild(card);
-                        });
-                    } else {
-                        cardList.innerHTML = '<div class="loading">No news available at the moment.</div>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching news:', error);
-                    document.getElementById('homeNewsList').innerHTML = 
-                        '<div class="loading">Failed to load news. Please try again later.</div>';
-                });
-        }
-
-        // Load Quick News (50 reel-style articles)
-        function loadQuickNews() {
-            const apiUrl = `https://newsdata.io/api/1/news?apikey=${apiKey}&country=in&language=en`;
-            
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const container = document.getElementById('reelsContainer');
-                    container.innerHTML = '';
-                    
-                    if (data.results && data.results.length > 0) {
-                        quickArticles = data.results.slice(0, 50);
-                        quickArticles.forEach((article, index) => {
-                            const reel = document.createElement('div');
-                            reel.className = 'reel' + (index === 0 ? ' active' : '');
-                            
-                            reel.innerHTML = `
-                                ${article.image_url ? `<img class="reel-image" src="${article.image_url}" alt="${article.title}">` : ''}
-                                <div class="reel-title">${article.title}</div>
-                                <div class="reel-content">${article.description || 'Swipe to read more stories...'}</div>
-                                <div class="reel-meta">
-                                    <span>${article.category ? article.category[0] : 'News'}</span>
-                                    <span>${index + 1}/${quickArticles.length}</span>
-                                </div>
-                            `;
-                            
-                            container.appendChild(reel);
-                        });
-                        
-                        document.getElementById('reelNav').style.display = 'flex';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching quick news:', error);
-                });
-        }
-
-        // Load Headlines (11 world news)
-        function loadHeadlines() {
-            const apiUrl = `https://newsdata.io/api/1/news?apikey=${apiKey}&language=en&category=top`;
-            
-            fetch(apiUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const cardList = document.getElementById('headlinesList');
-                    cardList.innerHTML = '';
-                    
-                    if (data.results && data.results.length > 0) {
-                        headlinesArticles = data.results.slice(0, 11);
-                        headlinesArticles.forEach((article) => {
-                            const card = document.createElement('div');
-                            card.className = 'news-card';
-                            
-                            const pubDate = new Date(article.pubDate);
-                            const timeAgo = getTimeAgo(pubDate);
-                            
-                            card.innerHTML = `
-                                ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}">` : ''}
-                                <div class="news-title">${article.title}</div>
-                                <div class="news-summary">${article.description || ''}</div>
-                                ${article.link ? `<a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">Read original source →</a>` : ''}
-                                <div class="news-meta">
-                                    <span class="category-tag">${article.source_id || 'World'}</span>
-                                    <span>${timeAgo}</span>
-                                </div>
-                            `;
-                            
-                            cardList.appendChild(card);
-                        });
-                    } else {
-                        cardList.innerHTML = '<div class="loading">No headlines available.</div>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching headlines:', error);
-                });
-        }
-
-        // Reel Navigation
-        document.getElementById('prevReel').addEventListener('click', () => {
-            if (currentReelIndex > 0) {
-                document.querySelectorAll('.reel')[currentReelIndex].classList.remove('active');
-                currentReelIndex--;
-                document.querySelectorAll('.reel')[currentReelIndex].classList.add('active');
+        // Fetch news from BOTH APIs and combine
+        async function fetchAllNews() {
+            try {
+                console.log('Fetching news from multiple sources...');
+                
+                // Fetch from NewsData.io
+                const newsDataPromise = fetch(`https://newsdata.io/api/1/news?apikey=${API_KEYS.newsData}&country=in&language=en`)
+                    .then(res => res.json())
+                    .catch(err => ({ results: [] }));
+                
+                // Fetch from NewsAPI.org
+                const newsApiPromise = fetch(`https://newsapi.org/v2/top-headlines?country=in&apiKey=${API_KEYS.newsApi}`)
+                    .then(res => res.json())
+                    .catch(err => ({ articles: [] }));
+                
+                // Wait for both APIs
+                const [newsDataResponse, newsApiResponse] = await Promise.all([newsDataPromise, newsApiPromise]);
+                
+                console.log('NewsData.io Response:', newsDataResponse);
+                console.log('NewsAPI.org Response:', newsApiResponse);
+                
+                // Normalize NewsData.io articles
+                const newsDataArticles = (newsDataResponse.results || []).map(article => ({
+                    title: article.title,
+                    description: article.description,
+                    content: article.content,
+                    image_url: article.image_url,
+                    link: article.link,
+                    pubDate: article.pubDate,
+                    source_id: article.source_id,
+                    category: article.category || ['general']
+                }));
+                
+                // Normalize NewsAPI.org articles
+                const newsApiArticles = (newsApiResponse.articles || []).map(article => ({
+                    title: article.title,
+                    description: article.description,
+                    content: article.content,
+                    image_url: article.urlToImage,
+                    link: article.url,
+                    pubDate: article.publishedAt,
+                    source_id: article.source.name,
+                    category: ['general']
+                }));
+                
+                // Combine and filter articles
+                allArticles = [...newsDataArticles, ...newsApiArticles]
+                    .filter(a => a.title && a.description)
+                    .slice(0, 100); // Get up to 100 articles total
+                
+                console.log(`Total articles combined: ${allArticles.length}`);
+                
+                if (allArticles.length > 0) {
+                    distributeArticles();
+                } else {
+                    showError('No news available at the moment. Please try again later.');
+                }
+            } catch (error) {
+                console.error('Error fetching news:', error);
+                showError('Failed to load news. Please check your connection and try again.');
             }
-        });
+        }
 
-        document.getElementById('nextReel').addEventListener('click', () => {
-            if (currentReelIndex < quickArticles.length - 1) {
-                document.querySelectorAll('.reel')[currentReelIndex].classList.remove('active');
-                currentReelIndex++;
-                document.querySelectorAll('.reel')[currentReelIndex].classList.add('active');
+        function distributeArticles() {
+            const total = allArticles.length;
+            
+            if (total < 3) {
+                showError('Not enough articles available. Please try again later.');
+                return;
             }
-        });
 
-        // Show Full Article
+            let homeCount, quickStart, quickEnd, headlinesStart;
+            
+            if (total >= 60) {
+                homeCount = 40;
+                quickStart = 40;
+                quickEnd = 70;
+                headlinesStart = 70;
+            } else if (total >= 30) {
+                homeCount = Math.floor(total * 0.5);
+                quickStart = homeCount;
+                quickEnd = homeCount + Math.floor(total * 0.35);
+                headlinesStart = quickEnd;
+            } else {
+                homeCount = Math.floor(total * 0.6);
+                quickStart = homeCount;
+                quickEnd = homeCount + Math.floor(total * 0.3);
+                headlinesStart = quickEnd;
+            }
+
+            loadHomeNews(homeCount);
+            loadQuickNews(quickStart, quickEnd);
+            loadHeadlines(headlinesStart, total);
+        }
+
+        function loadHomeNews(count) {
+            const cardList = document.getElementById('homeNewsList');
+            cardList.innerHTML = '';
+            
+            const homeArticles = allArticles.slice(0, count);
+            
+            if (homeArticles.length === 0) {
+                cardList.innerHTML = '<div class="error-message">No articles available for Home section.</div>';
+                return;
+            }
+            
+            homeArticles.forEach((article) => {
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                
+                const timeAgo = getTimeAgo(new Date(article.pubDate));
+                
+                card.innerHTML = `
+                    ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
+                    <div class="news-title">${article.title}</div>
+                    <div class="news-summary">${article.description || ''}</div>
+                    <div class="news-meta">
+                        <span class="category-tag">${article.category ? article.category[0] : 'News'}</span>
+                        <span>${timeAgo}</span>
+                    </div>
+                `;
+                
+                card.addEventListener('click', () => showFullArticle(article));
+                cardList.appendChild(card);
+            });
+        }
+
+        function loadQuickNews(startIdx, endIdx) {
+            const container = document.getElementById('reelsContainer');
+            container.innerHTML = '';
+            
+            const quickArticles = allArticles.slice(startIdx, endIdx);
+            
+            if (quickArticles.length === 0) {
+                container.innerHTML = '<div class="error-message">No articles available for Quick News section.<br><br>Try refreshing the page later.</div>';
+                return;
+            }
+            
+            quickArticles.forEach((article, index) => {
+                const reel = document.createElement('div');
+                reel.className = 'reel' + (index === 0 ? ' active' : '');
+                
+                reel.innerHTML = `
+                    <div class="reel-indicator">${index + 1}/${quickArticles.length}</div>
+                    ${article.image_url ? `<img class="reel-image" src="${article.image_url}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
+                    <div class="reel-title">${article.title}</div>
+                    <div class="reel-content">${article.description || ''}</div>
+                    <div class="reel-meta">
+                        <span>${article.category ? article.category[0] : 'News'}</span>
+                        <span>${getTimeAgo(new Date(article.pubDate))}</span>
+                    </div>
+                `;
+                
+                container.appendChild(reel);
+            });
+            
+            if (quickArticles.length > 0) {
+                setupSwipeGestures();
+            }
+        }
+
+        function setupSwipeGestures() {
+            const container = document.getElementById('reelsContainer');
+            const reels = container.querySelectorAll('.reel');
+            
+            if (reels.length === 0) return;
+            
+            container.addEventListener('touchstart', (e) => {
+                touchStartY = e.touches[0].clientY;
+            }, { passive: true });
+            
+            container.addEventListener('touchend', (e) => {
+                touchEndY = e.changedTouches[0].clientY;
+                handleSwipe();
+            }, { passive: true });
+            
+            function handleSwipe() {
+                const swipeDistance = touchStartY - touchEndY;
+                
+                if (Math.abs(swipeDistance) > 50) {
+                    if (swipeDistance > 0 && currentReelIndex < reels.length - 1) {
+                        reels[currentReelIndex].classList.remove('active');
+                        currentReelIndex++;
+                        reels[currentReelIndex].classList.add('active');
+                    } else if (swipeDistance < 0 && currentReelIndex > 0) {
+                        reels[currentReelIndex].classList.remove('active');
+                        currentReelIndex--;
+                        reels[currentReelIndex].classList.add('active');
+                    }
+                }
+            }
+        }
+
+        function loadHeadlines(startIdx, endIdx) {
+            const cardList = document.getElementById('headlinesList');
+            cardList.innerHTML = '';
+            
+            const headlinesArticles = allArticles.slice(startIdx, endIdx);
+            
+            if (headlinesArticles.length === 0) {
+                cardList.innerHTML = '<div class="error-message">No articles available for Headlines section.</div>';
+                return;
+            }
+            
+            headlinesArticles.forEach((article) => {
+                const card = document.createElement('div');
+                card.className = 'news-card';
+                
+                const timeAgo = getTimeAgo(new Date(article.pubDate));
+                
+                card.innerHTML = `
+                    ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
+                    <div class="news-title">${article.title}</div>
+                    <div class="news-summary">${article.description || ''}</div>
+                    ${article.link ? `<a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500; margin-top: 0.5rem; display: inline-block;">Read original source →</a>` : ''}
+                    <div class="news-meta">
+                        <span class="category-tag">${article.source_id || 'World'}</span>
+                        <span>${timeAgo}</span>
+                    </div>
+                `;
+                
+                cardList.appendChild(card);
+            });
+        }
+
+        function showError(message) {
+            document.getElementById('homeNewsList').innerHTML = `<div class="error-message">${message}</div>`;
+            document.getElementById('reelsContainer').innerHTML = `<div class="error-message">${message}</div>`;
+            document.getElementById('headlinesList').innerHTML = `<div class="error-message">${message}</div>`;
+        }
+
         function showFullArticle(article) {
             const articleContent = document.getElementById('articleContent');
             
             articleContent.innerHTML = `
-                ${article.image_url ? `<img src="${article.image_url}" style="width: 100%; border-radius: 8px; margin-bottom: 1rem;">` : ''}
+                ${article.image_url ? `<img src="${article.image_url}" style="width: 100%; border-radius: 8px; margin-bottom: 1rem;" onerror="this.style.display='none'">` : ''}
                 <div class="modal-header">${article.title}</div>
                 <p style="color: var(--text-meta); font-size: 0.9rem; margin-bottom: 1rem;">
                     ${article.category ? article.category.join(', ') : 'News'} • ${new Date(article.pubDate).toLocaleDateString()}
@@ -925,8 +977,8 @@
             return `${Math.floor(seconds / 86400)} days ago`;
         }
 
-        // Initialize
-        loadHomeNews();
+        fetchAllNews();
     </script>
 </body>
 </html>
+
