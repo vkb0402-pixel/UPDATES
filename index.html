@@ -80,6 +80,22 @@
             justify-content: center;
         }
 
+        .header-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .language-selector {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+        }
+
         .logo {
             height: 45px;
             width: 45px;
@@ -92,25 +108,6 @@
             font-size: 1.9rem;
             font-weight: 600;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-        }
-
-        .language-selector {
-            width: 40px;
-        }
-
-        .language-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            color: white;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .language-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
         }
 
         .bottom-nav {
@@ -499,6 +496,10 @@
             .reel-image {
                 height: 200px;
             }
+            .language-selector {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
+            }
         }
     </style>
 </head>
@@ -506,7 +507,6 @@
     <div class="sidebar" id="sidebar">
         <div class="sidebar-header">Menu</div>
         <ul class="sidebar-menu">
-            <li><a href="#" id="languageLink">🌐 Language</a></li>
             <li><a href="#" id="settingsLink">⚙️ Settings</a></li>
             <li><a href="#" id="aboutLink">ℹ️ About</a></li>
             <li><a href="#" id="helpLink">❓ Help</a></li>
@@ -523,13 +523,13 @@
             <img src="image-2.png" alt="Updates Logo" class="logo">
             <h1>Updates</h1>
         </div>
-        <div class="language-selector">
-            <select class="language-btn" id="languageSelect">
-                <option value="en">EN</option>
-                <option value="hi">हिं</option>
-                <option value="es">ES</option>
-                <option value="fr">FR</option>
-                <option value="de">DE</option>
+        <div class="header-right">
+            <select class="language-selector" id="languageSelector">
+                <option value="en">English</option>
+                <option value="hi">हिन्दी</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
             </select>
         </div>
     </header>
@@ -567,33 +567,6 @@
         </a>
     </div>
 
-    <div class="modal" id="languageModal">
-        <div class="modal-content">
-            <span class="modal-close" id="closeLanguage">&times;</span>
-            <div class="modal-header">Select Language</div>
-            <div class="setting-item" style="cursor: pointer;" onclick="changeLanguage('en')">
-                <span>English</span>
-                <span id="checkEn" style="display: none;">✓</span>
-            </div>
-            <div class="setting-item" style="cursor: pointer;" onclick="changeLanguage('hi')">
-                <span>हिन्दी</span>
-                <span id="checkHi" style="display: none;">✓</span>
-            </div>
-            <div class="setting-item" style="cursor: pointer;" onclick="changeLanguage('es')">
-                <span>Español</span>
-                <span id="checkEs" style="display: none;">✓</span>
-            </div>
-            <div class="setting-item" style="cursor: pointer;" onclick="changeLanguage('fr')">
-                <span>Français</span>
-                <span id="checkFr" style="display: none;">✓</span>
-            </div>
-            <div class="setting-item" style="cursor: pointer;" onclick="changeLanguage('de')">
-                <span>Deutsch</span>
-                <span id="checkDe" style="display: none;">✓</span>
-            </div>
-        </div>
-    </div>
-
     <div class="modal" id="settingsModal">
         <div class="modal-content">
             <span class="modal-close" id="closeSettings">&times;</span>
@@ -626,16 +599,16 @@
         <div class="modal-content">
             <span class="modal-close" id="closeAbout">&times;</span>
             <div class="modal-header">About Updates</div>
-            <p>Updates is a multilingual news aggregator providing you with the latest news from India and around the world in 5 languages.</p>
-            <p><strong>Version:</strong> 4.0.0</p>
+            <p>Updates is a comprehensive news aggregator providing latest news from India and around the world in multiple languages.</p>
+            <p style="margin-top: 1rem;"><strong>Version:</strong> 4.0.0</p>
             <p><strong>Developer:</strong> VKB Updates Team</p>
-            <p><strong>News Sources:</strong></p>
-            <ul style="padding-left: 1.5rem; margin-top: 0.5rem;">
-                <li>NewsData.io - <a href="https://newsdata.io" target="_blank" style="color: var(--accent-color);">newsdata.io</a></li>
-                <li>NewsAPI.org - <a href="https://newsapi.org" target="_blank" style="color: var(--accent-color);">newsapi.org</a></li>
-                <li>TheNewsAPI - <a href="https://thenewsapi.com" target="_blank" style="color: var(--accent-color);">thenewsapi.com</a></li>
+            <p style="margin-top: 1rem;"><strong>News Sources:</strong></p>
+            <ul style="padding-left: 1.5rem; line-height: 1.8;">
+                <li>📰 <a href="https://newsdata.io" target="_blank" style="color: var(--accent-color);">NewsData.io</a></li>
+                <li>📰 <a href="https://newsapi.org" target="_blank" style="color: var(--accent-color);">NewsAPI.org</a></li>
+                <li>📰 <a href="https://thenewsapi.com" target="_blank" style="color: var(--accent-color);">TheNewsAPI.com</a></li>
             </ul>
-            <p style="margin-top: 1rem;"><strong>Languages:</strong> English, हिन्दी, Español, Français, Deutsch</p>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-meta);">Stay informed with real-time news updates from multiple trusted sources.</p>
         </div>
     </div>
 
@@ -648,10 +621,10 @@
             <p><strong>📞 Phone:</strong> <a href="tel:+919919800350" style="color: var(--accent-color);">99198 00350</a></p>
             <p><strong>FAQ:</strong></p>
             <ul style="padding-left: 1.5rem;">
-                <li><strong>How often is news updated?</strong> News is fetched in real-time from 3 APIs.</li>
+                <li><strong>How often is news updated?</strong> News is fetched in real-time from our APIs.</li>
+                <li><strong>How many languages are supported?</strong> 5 languages: English, Hindi, Spanish, French, and German.</li>
                 <li><strong>Can I customize news sources?</strong> This feature is coming soon!</li>
                 <li><strong>Is this app free?</strong> Yes, completely free to use.</li>
-                <li><strong>How to change language?</strong> Use the language selector in the header or menu.</li>
             </ul>
         </div>
     </div>
@@ -670,6 +643,14 @@
             newsApi: 'f20f53e207ed497dace6c1d4a47daec9',
             theNewsApi: 'rGf2CKABjiCR1SBm30vdPV2Fb63gbXsMcCFbnDxK'
         };
+
+        const LANGUAGE_MAP = {
+            'en': { newsData: 'en', newsApi: 'en', theNewsApi: 'en', country: 'in,us,gb' },
+            'hi': { newsData: 'hi', newsApi: 'en', theNewsApi: 'en', country: 'in' },
+            'es': { newsData: 'es', newsApi: 'es', theNewsApi: 'es', country: 'es,mx,ar' },
+            'fr': { newsData: 'fr', newsApi: 'fr', theNewsApi: 'fr', country: 'fr,ca' },
+            'de': { newsData: 'de', newsApi: 'de', theNewsApi: 'de', country: 'de,at,ch' }
+        };
         
         let allArticles = [];
         let currentReelIndex = 0;
@@ -677,18 +658,10 @@
         let touchEndY = 0;
         let currentLanguage = 'en';
 
-        // Language mapping
-        const LANG_MAP = {
-            'en': 'en',
-            'hi': 'hi',
-            'es': 'es',
-            'fr': 'fr',
-            'de': 'de'
-        };
-
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
+        const languageSelector = document.getElementById('languageSelector');
 
         menuBtn.addEventListener('click', () => {
             sidebar.classList.toggle('open');
@@ -699,6 +672,20 @@
             sidebar.classList.remove('open');
             overlay.classList.remove('active');
         });
+
+        languageSelector.addEventListener('change', (e) => {
+            currentLanguage = e.target.value;
+            sessionStorage.setItem('language', currentLanguage);
+            allArticles = [];
+            fetchAllNews();
+        });
+
+        // Restore saved language
+        const savedLanguage = sessionStorage.getItem('language');
+        if (savedLanguage) {
+            currentLanguage = savedLanguage;
+            languageSelector.value = savedLanguage;
+        }
 
         const navItems = document.querySelectorAll('.nav-item');
         const pages = document.querySelectorAll('.page');
@@ -720,15 +707,6 @@
         const aboutModal = document.getElementById('aboutModal');
         const helpModal = document.getElementById('helpModal');
         const articleModal = document.getElementById('articleModal');
-        const languageModal = document.getElementById('languageModal');
-
-        document.getElementById('languageLink').addEventListener('click', (e) => {
-            e.preventDefault();
-            languageModal.classList.add('active');
-            updateLanguageChecks();
-            sidebar.classList.remove('open');
-            overlay.classList.remove('active');
-        });
 
         document.getElementById('settingsLink').addEventListener('click', (e) => {
             e.preventDefault();
@@ -749,10 +727,6 @@
             helpModal.classList.add('active');
             sidebar.classList.remove('open');
             overlay.classList.remove('active');
-        });
-
-        document.getElementById('closeLanguage').addEventListener('click', () => {
-            languageModal.classList.remove('active');
         });
 
         document.getElementById('closeSettings').addEventListener('click', () => {
@@ -776,29 +750,7 @@
             if (e.target === aboutModal) aboutModal.classList.remove('active');
             if (e.target === helpModal) helpModal.classList.remove('active');
             if (e.target === articleModal) articleModal.classList.remove('active');
-            if (e.target === languageModal) languageModal.classList.remove('active');
         });
-
-        // Language selector change
-        document.getElementById('languageSelect').addEventListener('change', (e) => {
-            changeLanguage(e.target.value);
-        });
-
-        function changeLanguage(lang) {
-            currentLanguage = lang;
-            document.getElementById('languageSelect').value = lang;
-            updateLanguageChecks();
-            languageModal.classList.remove('active');
-            fetchAllNews();
-        }
-
-        function updateLanguageChecks() {
-            ['En', 'Hi', 'Es', 'Fr', 'De'].forEach(lang => {
-                document.getElementById(`check${lang}`).style.display = 'none';
-            });
-            const langMap = { 'en': 'En', 'hi': 'Hi', 'es': 'Es', 'fr': 'Fr', 'de': 'De' };
-            document.getElementById(`check${langMap[currentLanguage]}`).style.display = 'inline';
-        }
 
         const darkModeToggle = document.getElementById('darkModeToggle');
         let savedTheme = 'light';
@@ -827,42 +779,37 @@
             }
         });
 
-        // Fetch news from ALL THREE APIs with language support and deduplication
+        // Fetch news from ALL 3 APIs and combine with duplicate removal
         async function fetchAllNews() {
             try {
-                console.log(`Fetching news in ${currentLanguage} from multiple sources...`);
-                
-                const lang = LANG_MAP[currentLanguage];
+                console.log(`Fetching news in ${currentLanguage}...`);
+                const langConfig = LANGUAGE_MAP[currentLanguage];
                 
                 // Fetch from NewsData.io
-                const newsDataPromise = fetch(`https://newsdata.io/api/1/news?apikey=${API_KEYS.newsData}&language=${lang}`)
+                const newsDataPromise = fetch(`https://newsdata.io/api/1/news?apikey=${API_KEYS.newsData}&country=in&language=${langConfig.newsData}`)
                     .then(res => res.json())
                     .catch(err => ({ results: [] }));
                 
-                // Fetch from NewsAPI.org (only supports en, de, fr, es)
-                const newsApiPromise = ['en', 'de', 'fr', 'es'].includes(lang)
-                    ? fetch(`https://newsapi.org/v2/top-headlines?language=${lang}&apiKey=${API_KEYS.newsApi}`)
-                        .then(res => res.json())
-                        .catch(err => ({ articles: [] }))
-                    : Promise.resolve({ articles: [] });
+                // Fetch from NewsAPI.org
+                const newsApiPromise = fetch(`https://newsapi.org/v2/top-headlines?country=in&apiKey=${API_KEYS.newsApi}&language=${langConfig.newsApi}`)
+                    .then(res => res.json())
+                    .catch(err => ({ articles: [] }));
                 
                 // Fetch from TheNewsAPI.com
-                const theNewsApiPromise = fetch(`https://api.thenewsapi.com/v1/news/top?api_token=${API_KEYS.theNewsApi}&language=${lang}&limit=50`)
+                const theNewsApiPromise = fetch(`https://api.thenewsapi.com/v1/news/top?api_token=${API_KEYS.theNewsApi}&language=${langConfig.theNewsApi}&limit=50`)
                     .then(res => res.json())
                     .catch(err => ({ data: [] }));
                 
-                // Wait for all APIs
+                // Wait for all 3 APIs
                 const [newsDataResponse, newsApiResponse, theNewsApiResponse] = await Promise.all([
-                    newsDataPromise, 
-                    newsApiPromise,
-                    theNewsApiPromise
+                    newsDataPromise, newsApiPromise, theNewsApiPromise
                 ]);
                 
-                console.log('NewsData.io Response:', newsDataResponse);
-                console.log('NewsAPI.org Response:', newsApiResponse);
-                console.log('TheNewsAPI Response:', theNewsApiResponse);
+                console.log('NewsData.io:', newsDataResponse);
+                console.log('NewsAPI.org:', newsApiResponse);
+                console.log('TheNewsAPI.com:', theNewsApiResponse);
                 
-                // Normalize NewsData.io articles
+                // Normalize all articles to common format
                 const newsDataArticles = (newsDataResponse.results || []).map(article => ({
                     title: article.title,
                     description: article.description,
@@ -874,7 +821,6 @@
                     category: article.category || ['general']
                 }));
                 
-                // Normalize NewsAPI.org articles
                 const newsApiArticles = (newsApiResponse.articles || []).map(article => ({
                     title: article.title,
                     description: article.description,
@@ -882,15 +828,14 @@
                     image_url: article.urlToImage,
                     link: article.url,
                     pubDate: article.publishedAt,
-                    source_id: article.source?.name || 'NewsAPI',
+                    source_id: article.source.name || 'NewsAPI',
                     category: ['general']
                 }));
-                
-                // Normalize TheNewsAPI articles
+
                 const theNewsApiArticles = (theNewsApiResponse.data || []).map(article => ({
                     title: article.title,
                     description: article.description,
-                    content: article.snippet,
+                    content: article.description,
                     image_url: article.image_url,
                     link: article.url,
                     pubDate: article.published_at,
@@ -899,18 +844,18 @@
                 }));
                 
                 // Combine all articles
-                const combined = [...newsDataArticles, ...newsApiArticles, ...theNewsApiArticles];
+                let combinedArticles = [...newsDataArticles, ...newsApiArticles, ...theNewsApiArticles]
+                    .filter(a => a.title && a.description);
                 
                 // Remove duplicates based on title similarity
-                allArticles = removeDuplicates(combined)
-                    .filter(a => a.title && a.description);
+                allArticles = removeDuplicates(combinedArticles);
                 
                 console.log(`Total unique articles: ${allArticles.length}`);
                 
-                if (allArticles.length > 0) {
+                if (allArticles.length >= 50) {
                     distributeArticles();
                 } else {
-                    showError('No news available at the moment. Please try again later.');
+                    showError('Limited news available. Try changing language or refresh later.');
                 }
             } catch (error) {
                 console.error('Error fetching news:', error);
@@ -918,37 +863,37 @@
             }
         }
 
-        // Remove duplicate articles based on title
+        // Remove duplicate articles based on title similarity
         function removeDuplicates(articles) {
-            const seen = new Set();
-            return articles.filter(article => {
-                const titleLower = article.title.toLowerCase().trim();
-                if (seen.has(titleLower)) {
-                    return false;
+            const unique = [];
+            const seenTitles = new Set();
+            
+            articles.forEach(article => {
+                const normalizedTitle = article.title.toLowerCase().trim().substring(0, 50);
+                
+                if (!seenTitles.has(normalizedTitle)) {
+                    seenTitles.add(normalizedTitle);
+                    unique.push(article);
                 }
-                seen.add(titleLower);
-                return true;
             });
+            
+            return unique;
         }
 
         function distributeArticles() {
             const total = allArticles.length;
             
-            console.log(`Distributing ${total} articles...`);
-            
             // Ensure minimum articles per section
             const homeCount = Math.max(20, Math.floor(total * 0.4));
+            const quickStart = homeCount;
             const quickCount = Math.max(20, Math.floor(total * 0.4));
-            const headlinesCount = Math.max(10, total - homeCount - quickCount);
-            
-            // Adjust if we don't have enough total articles
-            const actualHome = Math.min(homeCount, total);
-            const actualQuick = Math.min(quickCount, Math.max(0, total - actualHome));
-            const actualHeadlines = Math.max(0, total - actualHome - actualQuick);
-            
-            loadHomeNews(actualHome);
-            loadQuickNews(actualHome, actualHome + actualQuick);
-            loadHeadlines(actualHome + actualQuick, total);
+            const quickEnd = quickStart + quickCount;
+            const headlinesStart = quickEnd;
+            const headlinesCount = Math.max(10, total - headlinesStart);
+
+            loadHomeNews(homeCount);
+            loadQuickNews(quickStart, quickEnd);
+            loadHeadlines(headlinesStart, headlinesStart + headlinesCount);
         }
 
         function loadHomeNews(count) {
@@ -957,8 +902,8 @@
             
             const homeArticles = allArticles.slice(0, count);
             
-            if (homeArticles.length === 0) {
-                cardList.innerHTML = '<div class="error-message">No articles available for Home section.</div>';
+            if (homeArticles.length < 20) {
+                cardList.innerHTML = '<div class="error-message">Not enough articles available. Try changing language.</div>';
                 return;
             }
             
@@ -989,8 +934,8 @@
             
             const quickArticles = allArticles.slice(startIdx, endIdx);
             
-            if (quickArticles.length === 0) {
-                container.innerHTML = '<div class="error-message">No articles available for Quick News section.</div>';
+            if (quickArticles.length < 20) {
+                container.innerHTML = '<div class="error-message">Not enough articles for Quick News. Try changing language.</div>';
                 return;
             }
             
@@ -1055,8 +1000,8 @@
             
             const headlinesArticles = allArticles.slice(startIdx, endIdx);
             
-            if (headlinesArticles.length === 0) {
-                cardList.innerHTML = '<div class="error-message">No articles available for Headlines section.</div>';
+            if (headlinesArticles.length < 10) {
+                cardList.innerHTML = '<div class="error-message">Not enough headlines. Try changing language.</div>';
                 return;
             }
             
@@ -1114,10 +1059,8 @@
             return `${Math.floor(seconds / 86400)} days ago`;
         }
 
-        // Initialize
-        updateLanguageChecks();
         fetchAllNews();
     </script>
 </body>
-</html>
+    </html>
 
