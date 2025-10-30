@@ -472,6 +472,19 @@
             line-height: 1.6;
         }
 
+        .contact-link {
+            color: var(--accent-color);
+            text-decoration: none;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .contact-link:hover::after {
+            content: ' (Click to reveal)';
+            font-size: 0.85rem;
+            color: var(--text-meta);
+        }
+
         @media (max-width: 500px) {
             .card-list {
                 padding: 0.5rem;
@@ -600,13 +613,13 @@
             <span class="modal-close" id="closeAbout">&times;</span>
             <div class="modal-header">About Updates</div>
             <p>Updates is a comprehensive news aggregator providing latest news from India and around the world in multiple languages.</p>
-            <p style="margin-top: 1rem;"><strong>Version:</strong> 4.0.0</p>
+            <p style="margin-top: 1rem;"><strong>Version:</strong> 5.0.0</p>
             <p><strong>Developer:</strong> VKB Updates Team</p>
             <p style="margin-top: 1rem;"><strong>News Sources:</strong></p>
             <ul style="padding-left: 1.5rem; line-height: 1.8;">
-                <li>📰 <a href="https://newsdata.io" target="_blank" style="color: var(--accent-color);">NewsData.io</a></li>
                 <li>📰 <a href="https://newsapi.org" target="_blank" style="color: var(--accent-color);">NewsAPI.org</a></li>
-                <li>📰 <a href="https://thenewsapi.com" target="_blank" style="color: var(--accent-color);">TheNewsAPI.com</a></li>
+                <li>📰 <a href="https://newsdata.io" target="_blank" style="color: var(--accent-color);">NewsData.io</a></li>
+                <li>📰 <a href="https://gnews.io" target="_blank" style="color: var(--accent-color);">GNews.io</a></li>
             </ul>
             <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-meta);">Stay informed with real-time news updates from multiple trusted sources.</p>
         </div>
@@ -617,8 +630,8 @@
             <span class="modal-close" id="closeHelp">&times;</span>
             <div class="modal-header">Help & Support</div>
             <p>Need help? Contact us:</p>
-            <p><strong>📧 Email:</strong> <a href="mailto:vivivictor.11111@gmail.com" style="color: var(--accent-color);">vivivictor.11111@gmail.com</a></p>
-            <p><strong>📞 Phone:</strong> <a href="tel:+919919800350" style="color: var(--accent-color);">99198 00350</a></p>
+            <p><strong>📧 Email:</strong> <a href="#" class="contact-link" id="emailLink">Click to reveal email</a></p>
+            <p><strong>📞 Phone:</strong> <a href="#" class="contact-link" id="phoneLink">Click to reveal phone</a></p>
             <p><strong>FAQ:</strong></p>
             <ul style="padding-left: 1.5rem;">
                 <li><strong>How often is news updated?</strong> News is fetched in real-time from our APIs.</li>
@@ -637,19 +650,17 @@
     </div>
 
     <script>
-        // Triple API Configuration with Language Support
+        // Multiple API Keys Configuration
         const API_KEYS = {
-            newsData: 'pub_630bb6b01dd54da7b8a20061a5bd8224',
             newsApi: 'f20f53e207ed497dace6c1d4a47daec9',
-            theNewsApi: 'rGf2CKABjiCR1SBm30vdPV2Fb63gbXsMcCFbnDxK'
+            newsData: 'pub_630bb6b01dd54da7b8a20061a5bd8224',
+            gnews: '7ea52edafd1d5eccbddcf495ceba6c11'
         };
 
-        const LANGUAGE_MAP = {
-            'en': { newsData: 'en', newsApi: 'en', theNewsApi: 'en', country: 'in,us,gb' },
-            'hi': { newsData: 'hi', newsApi: 'en', theNewsApi: 'en', country: 'in' },
-            'es': { newsData: 'es', newsApi: 'es', theNewsApi: 'es', country: 'es,mx,ar' },
-            'fr': { newsData: 'fr', newsApi: 'fr', theNewsApi: 'fr', country: 'fr,ca' },
-            'de': { newsData: 'de', newsApi: 'de', theNewsApi: 'de', country: 'de,at,ch' }
+        // Protected contact info (Base64 encoded)
+        const CONTACT = {
+            email: atob('dml2aXZpY3Rvci4xMTExMUBnbWFpbC5jb20='),
+            phone: atob('KzkxOTkxOTgwMDM1MA==')
         };
         
         let allArticles = [];
@@ -662,6 +673,17 @@
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         const languageSelector = document.getElementById('languageSelector');
+
+        // Protected contact reveal handlers
+        document.getElementById('emailLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.target.innerHTML = `<a href="mailto:${CONTACT.email}" style="color: var(--accent-color);">${CONTACT.email}</a>`;
+        });
+
+        document.getElementById('phoneLink').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.target.innerHTML = `<a href="tel:${CONTACT.phone}" style="color: var(--accent-color);">${CONTACT.phone}</a>`;
+        });
 
         menuBtn.addEventListener('click', () => {
             sidebar.classList.toggle('open');
@@ -676,11 +698,9 @@
         languageSelector.addEventListener('change', (e) => {
             currentLanguage = e.target.value;
             sessionStorage.setItem('language', currentLanguage);
-            allArticles = [];
             fetchAllNews();
         });
 
-        // Restore saved language
         const savedLanguage = sessionStorage.getItem('language');
         if (savedLanguage) {
             currentLanguage = savedLanguage;
@@ -756,9 +776,7 @@
         let savedTheme = 'light';
         try {
             savedTheme = sessionStorage.getItem('theme') || 'light';
-        } catch (e) {
-            console.log('Session storage not available');
-        }
+        } catch (e) {}
         
         if (savedTheme === 'dark') {
             document.documentElement.setAttribute('data-theme', 'dark');
@@ -779,83 +797,80 @@
             }
         });
 
-        // Fetch news from ALL 3 APIs and combine with duplicate removal
+        // Fetch news from ALL 3 APIs
         async function fetchAllNews() {
             try {
                 console.log(`Fetching news in ${currentLanguage}...`);
-                const langConfig = LANGUAGE_MAP[currentLanguage];
-                
-                // Fetch from NewsData.io
-                const newsDataPromise = fetch(`https://newsdata.io/api/1/news?apikey=${API_KEYS.newsData}&country=in&language=${langConfig.newsData}`)
-                    .then(res => res.json())
-                    .catch(err => ({ results: [] }));
                 
                 // Fetch from NewsAPI.org
-                const newsApiPromise = fetch(`https://newsapi.org/v2/top-headlines?country=in&apiKey=${API_KEYS.newsApi}&language=${langConfig.newsApi}`)
+                const newsApiPromise = fetch(`https://newsapi.org/v2/top-headlines?country=in&language=${currentLanguage}&apiKey=${API_KEYS.newsApi}&pageSize=100`)
                     .then(res => res.json())
                     .catch(err => ({ articles: [] }));
                 
-                // Fetch from TheNewsAPI.com
-                const theNewsApiPromise = fetch(`https://api.thenewsapi.com/v1/news/top?api_token=${API_KEYS.theNewsApi}&language=${langConfig.theNewsApi}&limit=50`)
+                // Fetch from NewsData.io
+                const newsDataPromise = fetch(`https://newsdata.io/api/1/news?apikey=${API_KEYS.newsData}&country=in&language=${currentLanguage}`)
                     .then(res => res.json())
-                    .catch(err => ({ data: [] }));
+                    .catch(err => ({ results: [] }));
                 
-                // Wait for all 3 APIs
-                const [newsDataResponse, newsApiResponse, theNewsApiResponse] = await Promise.all([
-                    newsDataPromise, newsApiPromise, theNewsApiPromise
+                // Fetch from GNews.io
+                const gnewsPromise = fetch(`https://gnews.io/api/v4/top-headlines?country=in&lang=${currentLanguage}&apikey=${API_KEYS.gnews}&max=100`)
+                    .then(res => res.json())
+                    .catch(err => ({ articles: [] }));
+                
+                const [newsApiData, newsDataData, gnewsData] = await Promise.all([
+                    newsApiPromise, newsDataPromise, gnewsPromise
                 ]);
                 
-                console.log('NewsData.io:', newsDataResponse);
-                console.log('NewsAPI.org:', newsApiResponse);
-                console.log('TheNewsAPI.com:', theNewsApiResponse);
+                console.log('NewsAPI.org:', newsApiData);
+                console.log('NewsData.io:', newsDataData);
+                console.log('GNews.io:', gnewsData);
                 
-                // Normalize all articles to common format
-                const newsDataArticles = (newsDataResponse.results || []).map(article => ({
-                    title: article.title,
-                    description: article.description,
-                    content: article.content,
-                    image_url: article.image_url,
-                    link: article.link,
-                    pubDate: article.pubDate,
-                    source_id: article.source_id || 'NewsData',
-                    category: article.category || ['general']
-                }));
-                
-                const newsApiArticles = (newsApiResponse.articles || []).map(article => ({
-                    title: article.title,
-                    description: article.description,
-                    content: article.content,
-                    image_url: article.urlToImage,
-                    link: article.url,
-                    pubDate: article.publishedAt,
-                    source_id: article.source.name || 'NewsAPI',
+                // Normalize all articles
+                const newsApiArticles = (newsApiData.articles || []).map(a => ({
+                    title: a.title,
+                    description: a.description,
+                    content: a.content,
+                    image_url: a.urlToImage,
+                    link: a.url,
+                    pubDate: a.publishedAt,
+                    source_id: a.source?.name || 'NewsAPI',
                     category: ['general']
                 }));
-
-                const theNewsApiArticles = (theNewsApiResponse.data || []).map(article => ({
-                    title: article.title,
-                    description: article.description,
-                    content: article.description,
-                    image_url: article.image_url,
-                    link: article.url,
-                    pubDate: article.published_at,
-                    source_id: article.source || 'TheNewsAPI',
-                    category: article.categories || ['general']
+                
+                const newsDataArticles = (newsDataData.results || []).map(a => ({
+                    title: a.title,
+                    description: a.description,
+                    content: a.content,
+                    image_url: a.image_url,
+                    link: a.link,
+                    pubDate: a.pubDate,
+                    source_id: a.source_id || 'NewsData',
+                    category: a.category || ['general']
                 }));
                 
-                // Combine all articles
-                let combinedArticles = [...newsDataArticles, ...newsApiArticles, ...theNewsApiArticles]
-                    .filter(a => a.title && a.description);
+                const gnewsArticles = (gnewsData.articles || []).map(a => ({
+                    title: a.title,
+                    description: a.description,
+                    content: a.content,
+                    image_url: a.image,
+                    link: a.url,
+                    pubDate: a.publishedAt,
+                    source_id: a.source?.name || 'GNews',
+                    category: ['general']
+                }));
                 
-                // Remove duplicates based on title similarity
-                allArticles = removeDuplicates(combinedArticles);
+                // Combine and filter
+                allArticles = [...newsApiArticles, ...newsDataArticles, ...gnewsArticles]
+                    .filter(a => a.title && a.description && a.title !== '[Removed]');
+                
+                allArticles = removeDuplicates(allArticles);
                 
                 console.log(`Total unique articles: ${allArticles.length}`);
                 
-                if (allArticles.length >= 50) {
+                if (allArticles.length >= 30) {
                     distributeArticles();
                 } else {
-                    showError('Limited news available. Try changing language or refresh later.');
+                    showError('Limited news available. Try refreshing or changing language.');
                 }
             } catch (error) {
                 console.error('Error fetching news:', error);
@@ -863,7 +878,6 @@
             }
         }
 
-        // Remove duplicate articles based on title similarity
         function removeDuplicates(articles) {
             const unique = [];
             const seenTitles = new Set();
@@ -883,27 +897,25 @@
         function distributeArticles() {
             const total = allArticles.length;
             
-            // Ensure minimum articles per section
-            const homeCount = Math.max(20, Math.floor(total * 0.4));
+            const homeCount = Math.max(20, Math.min(40, Math.floor(total * 0.4)));
             const quickStart = homeCount;
-            const quickCount = Math.max(20, Math.floor(total * 0.4));
-            const quickEnd = quickStart + quickCount;
+            const quickEnd = Math.min(total, quickStart + Math.max(20, Math.floor(total * 0.4)));
             const headlinesStart = quickEnd;
-            const headlinesCount = Math.max(10, total - headlinesStart);
+            const headlinesEnd = Math.min(total, headlinesStart + Math.max(10, total - headlinesStart));
 
-            loadHomeNews(homeCount);
+            loadHomeNews(0, homeCount);
             loadQuickNews(quickStart, quickEnd);
-            loadHeadlines(headlinesStart, headlinesStart + headlinesCount);
+            loadHeadlines(headlinesStart, headlinesEnd);
         }
 
-        function loadHomeNews(count) {
+        function loadHomeNews(startIdx, endIdx) {
             const cardList = document.getElementById('homeNewsList');
             cardList.innerHTML = '';
             
-            const homeArticles = allArticles.slice(0, count);
+            const homeArticles = allArticles.slice(startIdx, endIdx);
             
-            if (homeArticles.length < 20) {
-                cardList.innerHTML = '<div class="error-message">Not enough articles available. Try changing language.</div>';
+            if (homeArticles.length === 0) {
+                cardList.innerHTML = '<div class="error-message">No articles available. Try changing language.</div>';
                 return;
             }
             
@@ -918,7 +930,7 @@
                     <div class="news-title">${article.title}</div>
                     <div class="news-summary">${article.description || ''}</div>
                     <div class="news-meta">
-                        <span class="category-tag">${article.category ? article.category[0] : 'News'}</span>
+                        <span class="category-tag">${article.source_id || 'News'}</span>
                         <span>${timeAgo}</span>
                     </div>
                 `;
@@ -931,11 +943,12 @@
         function loadQuickNews(startIdx, endIdx) {
             const container = document.getElementById('reelsContainer');
             container.innerHTML = '';
+            currentReelIndex = 0;
             
             const quickArticles = allArticles.slice(startIdx, endIdx);
             
-            if (quickArticles.length < 20) {
-                container.innerHTML = '<div class="error-message">Not enough articles for Quick News. Try changing language.</div>';
+            if (quickArticles.length === 0) {
+                container.innerHTML = '<div class="error-message">No articles for Quick News. Try changing language.</div>';
                 return;
             }
             
@@ -949,7 +962,7 @@
                     <div class="reel-title">${article.title}</div>
                     <div class="reel-content">${article.description || ''}</div>
                     <div class="reel-meta">
-                        <span>${article.category ? article.category[0] : 'News'}</span>
+                        <span>${article.source_id || 'News'}</span>
                         <span>${getTimeAgo(new Date(article.pubDate))}</span>
                     </div>
                 `;
@@ -1000,8 +1013,8 @@
             
             const headlinesArticles = allArticles.slice(startIdx, endIdx);
             
-            if (headlinesArticles.length < 10) {
-                cardList.innerHTML = '<div class="error-message">Not enough headlines. Try changing language.</div>';
+            if (headlinesArticles.length === 0) {
+                cardList.innerHTML = '<div class="error-message">No headlines. Try changing language.</div>';
                 return;
             }
             
@@ -1015,7 +1028,7 @@
                     ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
                     <div class="news-title">${article.title}</div>
                     <div class="news-summary">${article.description || ''}</div>
-                    ${article.link ? `<a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500; margin-top: 0.5rem; display: inline-block;">Read original source →</a>` : ''}
+                    ${article.link ? `<a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500; margin-top: 0.5rem; display: inline-block;">Read full story →</a>` : ''}
                     <div class="news-meta">
                         <span class="category-tag">${article.source_id || 'World'}</span>
                         <span>${timeAgo}</span>
@@ -1039,11 +1052,10 @@
                 ${article.image_url ? `<img src="${article.image_url}" style="width: 100%; border-radius: 8px; margin-bottom: 1rem;" onerror="this.style.display='none'">` : ''}
                 <div class="modal-header">${article.title}</div>
                 <p style="color: var(--text-meta); font-size: 0.9rem; margin-bottom: 1rem;">
-                    ${article.category ? article.category.join(', ') : 'News'} • ${new Date(article.pubDate).toLocaleDateString()}
+                    ${article.source_id} • ${new Date(article.pubDate).toLocaleDateString()}
                 </p>
                 <p style="line-height: 1.6; color: var(--text-secondary);">${article.description || article.content || 'Full content not available.'}</p>
-                ${article.link ? `<p><a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none;">Read original article →</a></p>` : ''}
-                ${article.source_id ? `<p style="color: var(--text-meta); font-size: 0.85rem; margin-top: 1rem;">Source: ${article.source_id}</p>` : ''}
+                ${article.link ? `<p style="margin-top: 1rem;"><a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">Read original article →</a></p>` : ''}
             `;
             
             articleModal.classList.add('active');
@@ -1062,5 +1074,6 @@
         fetchAllNews();
     </script>
 </body>
-    </html>
+</html>
+
 
