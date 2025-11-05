@@ -1,14 +1,18 @@
 const express = require('express');
-const path = require('path');
+const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve static files from the current directory
-app.use(express.static(__dirname));
+app.use(cors());
 
-// Optionally, serve index.html for the root
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+// --- Your API Route ---
+app.get('/api/newsdata', (req, res) => {
+  return res.json({ status: 'ok', message: 'Demo newsdata endpoint working!' });
 });
 
-app.listen(PORT, () => console.log(`Server running on ${PORT}`));
+// Optionally, add other routes you need
+app.get('/', (req, res) => {
+  res.send('Backend is running');
+});
+
+app.listen(PORT, () => console.log(`Server on ${PORT}`));
