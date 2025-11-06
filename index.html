@@ -688,7 +688,8 @@
             overlay.classList.remove('active');
         });
 
-        languageSelector.addEventListener('click', (e) => {
+        // ✅ FIXED: Changed from 'click' to 'change'
+        languageSelector.addEventListener('change', (e) => {
             currentLanguage = e.target.value;
             sessionStorage.setItem('language', currentLanguage);
             fetchAllNews();
@@ -790,7 +791,7 @@
             }
         });
 
-        // Fetch news from backend (proxies ALL 3 APIs)
+        // ✅ BACKEND URL VERIFIED
         async function fetchAllNews() {
             try {
                 console.log(`Fetching news in ${currentLanguage}...`);
@@ -1067,6 +1068,4 @@
         fetchAllNews();
     </script>
 </body>
-                                         </html>
-
-
+</html>
