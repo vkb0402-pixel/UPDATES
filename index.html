@@ -650,13 +650,6 @@
     </div>
 
     <script>
-        // Multiple API Keys Configuration
-        const API_KEYS = {
-            newsApi: 'f20f53e207ed497dace6c1d4a47daec9',
-            newsData: 'pub_630bb6b01dd54da7b8a20061a5bd8224',
-            gnews: '7ea52edafd1d5eccbddcf495ceba6c11'
-        };
-
         // Protected contact info (Base64 encoded)
         const CONTACT = {
             email: atob('dml2aXZpY3Rvci4xMTExMUBnbWFpbC5jb20='),
@@ -695,7 +688,7 @@
             overlay.classList.remove('active');
         });
 
-        languageSelector.addEventListener('change', (e) => {
+        languageSelector.addEventListener('click', (e) => {
             currentLanguage = e.target.value;
             sessionStorage.setItem('language', currentLanguage);
             fetchAllNews();
@@ -797,23 +790,23 @@
             }
         });
 
-        // Fetch news from ALL 3 APIs
+        // Fetch news from backend (proxies ALL 3 APIs)
         async function fetchAllNews() {
             try {
                 console.log(`Fetching news in ${currentLanguage}...`);
                 
-                // Fetch from NewsAPI.org
-                const newsApiPromise = fetch(`https://newsapi.org/v2/top-headlines?country=in&language=${currentLanguage}&apiKey=${API_KEYS.newsApi}&pageSize=100`)
+                const BACKEND_URL = 'https://backend-ml60.onrender.com';
+                
+                // Fetch from backend endpoints
+                const newsApiPromise = fetch(`${BACKEND_URL}/api/newsapi?country=in&language=${currentLanguage}`)
                     .then(res => res.json())
                     .catch(err => ({ articles: [] }));
                 
-                // Fetch from NewsData.io
-                const newsDataPromise = fetch(`https://newsdata.io/api/1/news?apikey=${API_KEYS.newsData}&country=in&language=${currentLanguage}`)
+                const newsDataPromise = fetch(`${BACKEND_URL}/api/newsdata?country=in&language=${currentLanguage}`)
                     .then(res => res.json())
                     .catch(err => ({ results: [] }));
                 
-                // Fetch from GNews.io
-                const gnewsPromise = fetch(`https://gnews.io/api/v4/top-headlines?country=in&lang=${currentLanguage}&apikey=${API_KEYS.gnews}&max=100`)
+                const gnewsPromise = fetch(`${BACKEND_URL}/api/gnews?country=in&lang=${currentLanguage}`)
                     .then(res => res.json())
                     .catch(err => ({ articles: [] }));
                 
@@ -821,9 +814,9 @@
                     newsApiPromise, newsDataPromise, gnewsPromise
                 ]);
                 
-                console.log('NewsAPI.org:', newsApiData);
-                console.log('NewsData.io:', newsDataData);
-                console.log('GNews.io:', gnewsData);
+                console.log('NewsAPI:', newsApiData);
+                console.log('NewsData:', newsDataData);
+                console.log('GNews:', gnewsData);
                 
                 // Normalize all articles
                 const newsApiArticles = (newsApiData.articles || []).map(a => ({
@@ -1074,6 +1067,6 @@
         fetchAllNews();
     </script>
 </body>
-</html>
+                                         </html>
 
 
