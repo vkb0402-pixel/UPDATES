@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Permissions-Policy" content="geolocation=(), camera=(), microphone=()">
     <title>Updates - Short & Crisp News</title>
     <link rel="icon" href="image-2.png">
     <style>
@@ -613,7 +614,7 @@
             <span class="modal-close" id="closeAbout">&times;</span>
             <div class="modal-header">About Updates</div>
             <p>Updates is a comprehensive news aggregator providing latest news from India and around the world in multiple languages.</p>
-            <p style="margin-top: 1rem;"><strong>Version:</strong> 5.0.0</p>
+            <p style="margin-top: 1rem;"><strong>Version:</strong> 5.1.0</p>
             <p><strong>Developer:</strong> VKB Updates Team</p>
             <p style="margin-top: 1rem;"><strong>News Sources:</strong></p>
             <ul style="padding-left: 1.5rem; line-height: 1.8;">
@@ -650,7 +651,6 @@
     </div>
 
     <script>
-        // Protected contact info (Base64 encoded)
         const CONTACT = {
             email: atob('dml2aXZpY3Rvci4xMTExMUBnbWFpbC5jb20='),
             phone: atob('KzkxOTkxOTgwMDM1MA==')
@@ -661,13 +661,16 @@
         let touchStartY = 0;
         let touchEndY = 0;
         let currentLanguage = 'en';
+        let fetchAttempts = 0;
+        const MAX_RETRIES = 3;
+
+        const BACKEND_URL = 'https://backend-ml60.onrender.com';
 
         const menuBtn = document.getElementById('menuBtn');
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('overlay');
         const languageSelector = document.getElementById('languageSelector');
 
-        // Protected contact reveal handlers
         document.getElementById('emailLink').addEventListener('click', (e) => {
             e.preventDefault();
             e.target.innerHTML = `<a href="mailto:${CONTACT.email}" style="color: var(--accent-color);">${CONTACT.email}</a>`;
@@ -688,10 +691,10 @@
             overlay.classList.remove('active');
         });
 
-        // ✅ FIXED: Changed from 'click' to 'change'
         languageSelector.addEventListener('change', (e) => {
             currentLanguage = e.target.value;
             sessionStorage.setItem('language', currentLanguage);
+            fetchAttempts = 0;
             fetchAllNews();
         });
 
@@ -791,35 +794,58 @@
             }
         });
 
-        // ✅ BACKEND URL VERIFIED
+        async function fetchWithTimeout(url, timeout = 15000) {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), timeout);
+            
+            try {
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
+                return response;
+            } catch (error) {
+                clearTimeout(timeoutId);
+                throw error;
+            }
+        }
+
         async function fetchAllNews() {
             try {
-                console.log(`Fetching news in ${currentLanguage}...`);
+                console.log(`🔄 Fetching news in ${currentLanguage}... (Attempt ${fetchAttempts + 1}/${MAX_RETRIES})`);
                 
-                const BACKEND_URL = 'https://backend-ml60.onrender.com';
+                const newsApiPromise = fetchWithTimeout(`${BACKEND_URL}/api/newsapi?country=in&language=${currentLanguage}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error(`NewsAPI: ${res.status}`);
+                        return res.json();
+                    })
+                    .catch(err => {
+                        console.error('❌ NewsAPI Error:', err.message);
+                        return { articles: [] };
+                    });
                 
-                // Fetch from backend endpoints
-                const newsApiPromise = fetch(`${BACKEND_URL}/api/newsapi?country=in&language=${currentLanguage}`)
-                    .then(res => res.json())
-                    .catch(err => ({ articles: [] }));
+                const newsDataPromise = fetchWithTimeout(`${BACKEND_URL}/api/newsdata?country=in&language=${currentLanguage}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error(`NewsData: ${res.status}`);
+                        return res.json();
+                    })
+                    .catch(err => {
+                        console.error('❌ NewsData Error:', err.message);
+                        return { results: [] };
+                    });
                 
-                const newsDataPromise = fetch(`${BACKEND_URL}/api/newsdata?country=in&language=${currentLanguage}`)
-                    .then(res => res.json())
-                    .catch(err => ({ results: [] }));
-                
-                const gnewsPromise = fetch(`${BACKEND_URL}/api/gnews?country=in&lang=${currentLanguage}`)
-                    .then(res => res.json())
-                    .catch(err => ({ articles: [] }));
+                const gnewsPromise = fetchWithTimeout(`${BACKEND_URL}/api/gnews?country=in&lang=${currentLanguage}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error(`GNews: ${res.status}`);
+                        return res.json();
+                    })
+                    .catch(err => {
+                        console.error('❌ GNews Error:', err.message);
+                        return { articles: [] };
+                    });
                 
                 const [newsApiData, newsDataData, gnewsData] = await Promise.all([
                     newsApiPromise, newsDataPromise, gnewsPromise
                 ]);
                 
-                console.log('NewsAPI:', newsApiData);
-                console.log('NewsData:', newsDataData);
-                console.log('GNews:', gnewsData);
-                
-                // Normalize all articles
                 const newsApiArticles = (newsApiData.articles || []).map(a => ({
                     title: a.title,
                     description: a.description,
@@ -853,22 +879,31 @@
                     category: ['general']
                 }));
                 
-                // Combine and filter
                 allArticles = [...newsApiArticles, ...newsDataArticles, ...gnewsArticles]
                     .filter(a => a.title && a.description && a.title !== '[Removed]');
                 
                 allArticles = removeDuplicates(allArticles);
                 
-                console.log(`Total unique articles: ${allArticles.length}`);
+                console.log(`✅ Total articles fetched: ${allArticles.length}`);
                 
-                if (allArticles.length >= 30) {
+                if (allArticles.length >= 20) {
                     distributeArticles();
+                } else if (fetchAttempts < MAX_RETRIES) {
+                    fetchAttempts++;
+                    console.log(`⏳ Retrying in 5 seconds... (Attempt ${fetchAttempts}/${MAX_RETRIES})`);
+                    setTimeout(fetchAllNews, 5000);
                 } else {
-                    showError('Limited news available. Try refreshing or changing language.');
+                    showError('Limited news available. Please try refreshing or changing language.');
                 }
             } catch (error) {
-                console.error('Error fetching news:', error);
-                showError('Failed to load news. Please check your connection and try again.');
+                console.error('💥 Fatal Error:', error);
+                if (fetchAttempts < MAX_RETRIES) {
+                    fetchAttempts++;
+                    console.log(`⏳ Retrying in 5 seconds... (Attempt ${fetchAttempts}/${MAX_RETRIES})`);
+                    setTimeout(fetchAllNews, 5000);
+                } else {
+                    showError('Failed to load news. Please check your connection and try again.');
+                }
             }
         }
 
@@ -909,7 +944,7 @@
             const homeArticles = allArticles.slice(startIdx, endIdx);
             
             if (homeArticles.length === 0) {
-                cardList.innerHTML = '<div class="error-message">No articles available. Try changing language.</div>';
+                cardList.innerHTML = '<div class="error-message">No articles available.</div>';
                 return;
             }
             
@@ -942,7 +977,7 @@
             const quickArticles = allArticles.slice(startIdx, endIdx);
             
             if (quickArticles.length === 0) {
-                container.innerHTML = '<div class="error-message">No articles for Quick News. Try changing language.</div>';
+                container.innerHTML = '<div class="error-message">No quick news available.</div>';
                 return;
             }
             
@@ -1008,7 +1043,7 @@
             const headlinesArticles = allArticles.slice(startIdx, endIdx);
             
             if (headlinesArticles.length === 0) {
-                cardList.innerHTML = '<div class="error-message">No headlines. Try changing language.</div>';
+                cardList.innerHTML = '<div class="error-message">No headlines available.</div>';
                 return;
             }
             
@@ -1064,6 +1099,11 @@
             if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
             return `${Math.floor(seconds / 86400)} days ago`;
         }
+
+        // Keep backend awake
+        setInterval(() => {
+            fetch(`${BACKEND_URL}/`).catch(e => console.log('Backend ping'));
+        }, 5 * 60 * 1000);
 
         fetchAllNews();
     </script>
