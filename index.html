@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Permissions-Policy" content="geolocation=(), camera=(), microphone=()">
     <title>Updates - Short & Crisp News</title>
     <link rel="icon" href="image-2.png">
     <style>
@@ -614,7 +613,7 @@
             <span class="modal-close" id="closeAbout">&times;</span>
             <div class="modal-header">About Updates</div>
             <p>Updates is a comprehensive news aggregator providing latest news from India and around the world in multiple languages.</p>
-            <p style="margin-top: 1rem;"><strong>Version:</strong> 5.1.0</p>
+            <p style="margin-top: 1rem;"><strong>Version:</strong> 5.2.0 (Fixed Distribution)</strong></p>
             <p><strong>Developer:</strong> VKB Updates Team</p>
             <p style="margin-top: 1rem;"><strong>News Sources:</strong></p>
             <ul style="padding-left: 1.5rem; line-height: 1.8;">
@@ -925,16 +924,28 @@
 
         function distributeArticles() {
             const total = allArticles.length;
+            console.log(`📊 Distributing ${total} articles across sections...`);
             
-            const homeCount = Math.max(20, Math.min(40, Math.floor(total * 0.4)));
-            const quickStart = homeCount;
-            const quickEnd = Math.min(total, quickStart + Math.max(20, Math.floor(total * 0.4)));
-            const headlinesStart = quickEnd;
-            const headlinesEnd = Math.min(total, headlinesStart + Math.max(10, total - headlinesStart));
+            // ✅ FIXED LOGIC: Only give each section what it needs
+            const minPerSection = Math.ceil(total / 3);
+            
+            let homeEnd = Math.min(minPerSection, total);
+            let quickEnd = Math.min(homeEnd + minPerSection, total);
+            let headlinesEnd = total;
 
-            loadHomeNews(0, homeCount);
-            loadQuickNews(quickStart, quickEnd);
-            loadHeadlines(headlinesStart, headlinesEnd);
+            console.log(`Home: 0-${homeEnd} | Quick: ${homeEnd}-${quickEnd} | Headlines: ${quickEnd}-${headlinesEnd}`);
+
+            loadHomeNews(0, homeEnd);
+            if (quickEnd > homeEnd) {
+                loadQuickNews(homeEnd, quickEnd);
+            } else {
+                document.getElementById('reelsContainer').innerHTML = '<div class="error-message">More news needed for this section.</div>';
+            }
+            if (headlinesEnd > quickEnd) {
+                loadHeadlines(quickEnd, headlinesEnd);
+            } else {
+                document.getElementById('headlinesList').innerHTML = '<div class="error-message">More news needed for this section.</div>';
+            }
         }
 
         function loadHomeNews(startIdx, endIdx) {
@@ -942,6 +953,7 @@
             cardList.innerHTML = '';
             
             const homeArticles = allArticles.slice(startIdx, endIdx);
+            console.log(`📰 Loading Home section: ${homeArticles.length} articles`);
             
             if (homeArticles.length === 0) {
                 cardList.innerHTML = '<div class="error-message">No articles available.</div>';
@@ -975,9 +987,10 @@
             currentReelIndex = 0;
             
             const quickArticles = allArticles.slice(startIdx, endIdx);
+            console.log(`⚡ Loading Quick section: ${quickArticles.length} articles`);
             
             if (quickArticles.length === 0) {
-                container.innerHTML = '<div class="error-message">No quick news available.</div>';
+                container.innerHTML = '<div class="error-message">Not enough articles for Quick News. Try changing language.</div>';
                 return;
             }
             
@@ -1041,9 +1054,10 @@
             cardList.innerHTML = '';
             
             const headlinesArticles = allArticles.slice(startIdx, endIdx);
+            console.log(`📰 Loading Headlines section: ${headlinesArticles.length} articles`);
             
             if (headlinesArticles.length === 0) {
-                cardList.innerHTML = '<div class="error-message">No headlines available.</div>';
+                cardList.innerHTML = '<div class="error-message">Not enough articles for Headlines. Try changing language.</div>';
                 return;
             }
             
