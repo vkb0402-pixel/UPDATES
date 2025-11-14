@@ -80,22 +80,6 @@
             justify-content: center;
         }
 
-        .header-right {
-            display: flex;
-            align-items: center;
-        }
-
-        .language-selector {
-            background: rgba(255, 255, 255, 0.2);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 0.4rem 0.8rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            cursor: pointer;
-            outline: none;
-        }
-
         .logo {
             height: 45px;
             width: 45px;
@@ -265,6 +249,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+        }
+
+        .language-selector {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+            width: 140px;
         }
 
         .switch {
@@ -509,10 +505,6 @@
             .reel-image {
                 height: 200px;
             }
-            .language-selector {
-                font-size: 0.75rem;
-                padding: 0.3rem 0.6rem;
-            }
         }
     </style>
 </head>
@@ -535,15 +527,6 @@
         <div class="header-center">
             <img src="image-2.png" alt="Updates Logo" class="logo">
             <h1>Updates</h1>
-        </div>
-        <div class="header-right">
-            <select class="language-selector" id="languageSelector">
-                <option value="en">English</option>
-                <option value="hi">हिन्दी</option>
-                <option value="es">Español</option>
-                <option value="fr">Français</option>
-                <option value="de">Deutsch</option>
-            </select>
         </div>
     </header>
 
@@ -592,6 +575,16 @@
                 </label>
             </div>
             <div class="setting-item">
+                <span>Language</span>
+                <select class="language-selector" id="languageSelector">
+                    <option value="en">English</option>
+                    <option value="hi">हिन्दी</option>
+                    <option value="es">Español</option>
+                    <option value="fr">Français</option>
+                    <option value="de">Deutsch</option>
+                </select>
+            </div>
+            <div class="setting-item">
                 <span>Notifications</span>
                 <label class="switch">
                     <input type="checkbox" id="notifToggle">
@@ -613,7 +606,7 @@
             <span class="modal-close" id="closeAbout">&times;</span>
             <div class="modal-header">About Updates</div>
             <p>Updates is a comprehensive news aggregator providing latest news from India and around the world in multiple languages.</p>
-            <p style="margin-top: 1rem;"><strong>Version:</strong> 5.2.0 (Fixed Distribution)</strong></p>
+            <p style="margin-top: 1rem;"><strong>Version:</strong> 5.3.0 (Persistent Dark Mode)</p>
             <p><strong>Developer:</strong> VKB Updates Team</p>
             <p style="margin-top: 1rem;"><strong>News Sources:</strong></p>
             <ul style="padding-left: 1.5rem; line-height: 1.8;">
@@ -692,12 +685,12 @@
 
         languageSelector.addEventListener('change', (e) => {
             currentLanguage = e.target.value;
-            sessionStorage.setItem('language', currentLanguage);
+            localStorage.setItem('language', currentLanguage);
             fetchAttempts = 0;
             fetchAllNews();
         });
 
-        const savedLanguage = sessionStorage.getItem('language');
+        const savedLanguage = localStorage.getItem('language');
         if (savedLanguage) {
             currentLanguage = savedLanguage;
             languageSelector.value = savedLanguage;
@@ -768,10 +761,11 @@
             if (e.target === articleModal) articleModal.classList.remove('active');
         });
 
+        // ✅ FIXED: Changed to localStorage for persistent dark mode
         const darkModeToggle = document.getElementById('darkModeToggle');
         let savedTheme = 'light';
         try {
-            savedTheme = sessionStorage.getItem('theme') || 'light';
+            savedTheme = localStorage.getItem('theme') || 'light';
         } catch (e) {}
         
         if (savedTheme === 'dark') {
@@ -783,12 +777,12 @@
             if (darkModeToggle.checked) {
                 document.documentElement.setAttribute('data-theme', 'dark');
                 try {
-                    sessionStorage.setItem('theme', 'dark');
+                    localStorage.setItem('theme', 'dark');
                 } catch (e) {}
             } else {
                 document.documentElement.setAttribute('data-theme', 'light');
                 try {
-                    sessionStorage.setItem('theme', 'light');
+                    localStorage.setItem('theme', 'light');
                 } catch (e) {}
             }
         });
@@ -926,7 +920,6 @@
             const total = allArticles.length;
             console.log(`📊 Distributing ${total} articles across sections...`);
             
-            // ✅ FIXED LOGIC: Only give each section what it needs
             const minPerSection = Math.ceil(total / 3);
             
             let homeEnd = Math.min(minPerSection, total);
@@ -1114,7 +1107,6 @@
             return `${Math.floor(seconds / 86400)} days ago`;
         }
 
-        // Keep backend awake
         setInterval(() => {
             fetch(`${BACKEND_URL}/`).catch(e => console.log('Backend ping'));
         }, 5 * 60 * 1000);
@@ -1122,4 +1114,4 @@
         fetchAllNews();
     </script>
 </body>
-</html>
+    </html>
