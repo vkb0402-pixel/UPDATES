@@ -7,27 +7,33 @@
     <link rel="icon" href="image-2.png">
     <style>
         :root {
-            --bg-color: #f2f2f2;
-            --card-bg: #fff;
-            --text-primary: #2c3e50;
-            --text-secondary: #34495e;
-            --text-meta: #7f8c8d;
+            --bg-color: #f5f7fa;
+            --card-bg: #ffffff;
+            --text-primary: #1a1a1a;
+            --text-secondary: #4a4a4a;
+            --text-meta: #888888;
             --header-gradient-1: #4A90E2;
             --header-gradient-2: #357ABD;
-            --border-color: #ecf0f1;
+            --border-color: #e8ecef;
             --accent-color: #4A90E2;
+            --hover-shadow: rgba(74, 144, 226, 0.15);
+            --skeleton-bg: #e0e0e0;
+            --skeleton-shine: #f0f0f0;
         }
 
         [data-theme="dark"] {
-            --bg-color: #1a1a1a;
-            --card-bg: #2d2d2d;
-            --text-primary: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --text-meta: #888;
+            --bg-color: #0f0f0f;
+            --card-bg: #1c1c1c;
+            --text-primary: #e8e8e8;
+            --text-secondary: #b8b8b8;
+            --text-meta: #777777;
             --header-gradient-1: #2d5f8d;
             --header-gradient-2: #1e4570;
-            --border-color: #404040;
+            --border-color: #2a2a2a;
             --accent-color: #5fa3e8;
+            --hover-shadow: rgba(95, 163, 232, 0.2);
+            --skeleton-bg: #2a2a2a;
+            --skeleton-shine: #353535;
         }
 
         * {
@@ -37,13 +43,45 @@
         }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             background: var(--bg-color);
             padding-bottom: 70px;
-            transition: background 0.3s ease;
+            transition: background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             overflow-x: hidden;
+            line-height: 1.6;
         }
 
+        /* ===== SMOOTH ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -1000px 0; }
+            100% { background-position: 1000px 0; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease;
+        }
+
+        .slide-up {
+            animation: slideUp 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* ===== HEADER ===== */
         header {
             background: linear-gradient(135deg, var(--header-gradient-1), var(--header-gradient-2));
             color: #fff;
@@ -52,10 +90,12 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 2px 10px rgba(74, 144, 226, 0.3);
+            box-shadow: 0 4px 20px rgba(74, 144, 226, 0.25);
             position: sticky;
             top: 0;
             z-index: 100;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
         .header-left {
@@ -71,6 +111,15 @@
             cursor: pointer;
             padding: 0.5rem;
             margin-right: 0.5rem;
+            transition: transform 0.2s ease;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .menu-btn:active {
+            transform: scale(0.95);
         }
 
         .header-center {
@@ -84,16 +133,23 @@
             height: 45px;
             width: 45px;
             margin-right: 12px;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: rotate(5deg) scale(1.05);
         }
 
         h1 {
             font-size: 1.9rem;
-            font-weight: 600;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            font-weight: 700;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            letter-spacing: 0.5px;
         }
 
+        /* ===== NAVIGATION ===== */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -103,8 +159,10 @@
             display: flex;
             justify-content: space-around;
             padding: 0.5rem 0;
-            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 -2px 15px rgba(0, 0, 0, 0.1);
             z-index: 100;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
         .nav-item {
@@ -112,34 +170,64 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0.5rem;
+            padding: 0.6rem;
             cursor: pointer;
-            transition: color 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             color: var(--text-meta);
             text-decoration: none;
+            position: relative;
+        }
+
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 40px;
+            height: 3px;
+            background: var(--accent-color);
+            border-radius: 0 0 3px 3px;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item.active::before {
+            transform: translateX(-50%) scaleX(1);
         }
 
         .nav-item.active {
             color: var(--accent-color);
         }
 
+        .nav-item:active {
+            transform: scale(0.92);
+        }
+
         .nav-icon {
             font-size: 1.5rem;
             margin-bottom: 0.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .nav-item.active .nav-icon {
+            transform: scale(1.15);
         }
 
         .nav-label {
             font-size: 0.75rem;
+            font-weight: 500;
         }
 
         .page {
             display: none;
+            animation: fadeIn 0.5s ease;
         }
 
         .page.active {
             display: block;
         }
 
+        /* ===== SIDEBAR ===== */
         .sidebar {
             position: fixed;
             top: 0;
@@ -147,8 +235,8 @@
             width: 280px;
             height: 100%;
             background: var(--card-bg);
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.2);
-            transition: left 0.3s ease;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.15);
+            transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
             overflow-y: auto;
         }
@@ -163,6 +251,7 @@
             padding: 1.5rem;
             font-size: 1.3rem;
             font-weight: bold;
+            letter-spacing: 0.5px;
         }
 
         .sidebar-menu {
@@ -175,14 +264,16 @@
 
         .sidebar-menu a {
             display: block;
-            padding: 1rem 1.5rem;
+            padding: 1.2rem 1.5rem;
             color: var(--text-primary);
             text-decoration: none;
-            transition: background 0.2s;
+            transition: all 0.2s ease;
+            font-weight: 500;
         }
 
         .sidebar-menu a:hover {
             background: var(--bg-color);
+            padding-left: 2rem;
         }
 
         .overlay {
@@ -191,26 +282,30 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             display: none;
             z-index: 999;
+            transition: opacity 0.3s ease;
         }
 
         .overlay.active {
             display: block;
+            animation: fadeIn 0.3s ease;
         }
 
+        /* ===== MODALS ===== */
         .modal {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 2000;
+            animation: fadeIn 0.3s ease;
         }
 
         .modal.active {
@@ -221,12 +316,13 @@
             background: var(--card-bg);
             color: var(--text-primary);
             padding: 2rem;
-            border-radius: 12px;
+            border-radius: 16px;
             max-width: 500px;
             width: 90%;
             max-height: 80vh;
             overflow-y: auto;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .modal-header {
@@ -238,9 +334,16 @@
 
         .modal-close {
             float: right;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
             cursor: pointer;
             color: var(--text-meta);
+            transition: all 0.2s ease;
+            line-height: 1;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+            transform: scale(1.2);
         }
 
         .setting-item {
@@ -254,20 +357,25 @@
         .language-selector {
             background: var(--card-bg);
             color: var(--text-primary);
-            border: 1px solid var(--border-color);
-            padding: 0.5rem;
-            border-radius: 8px;
+            border: 2px solid var(--border-color);
+            padding: 0.6rem;
+            border-radius: 10px;
             font-size: 0.9rem;
             cursor: pointer;
             outline: none;
             width: 140px;
+            transition: all 0.2s ease;
+        }
+
+        .language-selector:hover {
+            border-color: var(--accent-color);
         }
 
         .switch {
             position: relative;
             display: inline-block;
             width: 50px;
-            height: 24px;
+            height: 26px;
         }
 
         .switch input {
@@ -284,19 +392,19 @@
             right: 0;
             bottom: 0;
             background-color: #ccc;
-            transition: 0.4s;
-            border-radius: 24px;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 26px;
         }
 
         .slider:before {
             position: absolute;
             content: "";
-            height: 18px;
-            width: 18px;
+            height: 20px;
+            width: 20px;
             left: 3px;
             bottom: 3px;
             background-color: white;
-            transition: 0.4s;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
             border-radius: 50%;
         }
 
@@ -305,55 +413,87 @@
         }
 
         input:checked + .slider:before {
-            transform: translateX(26px);
+            transform: translateX(24px);
         }
 
+        /* ===== CARD LIST ===== */
         .card-list {
             display: flex;
             flex-direction: column;
-            gap: 1.2rem;
-            max-width: 600px;
+            gap: 1.5rem;
+            max-width: 650px;
             margin: 2rem auto;
             padding: 0 1rem;
         }
 
         .news-card {
             background: var(--card-bg);
-            border-radius: 14px;
-            box-shadow: 0 4px 18px rgba(30, 40, 100, 0.08);
-            padding: 1.2rem 1rem;
-            transition: all 0.3s ease;
-            border-left: 4px solid var(--accent-color);
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--border-color);
             cursor: pointer;
+            position: relative;
+            animation: slideUp 0.5s ease;
         }
 
         .news-card:hover {
-            box-shadow: 0 8px 24px rgba(30, 40, 100, 0.15);
-            transform: translateY(-2px);
+            box-shadow: 0 8px 32px var(--hover-shadow);
+            transform: translateY(-6px);
+            border-color: var(--accent-color);
+        }
+
+        .news-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--accent-color);
+            transform: scaleY(0);
+            transition: transform 0.3s ease;
+        }
+
+        .news-card:hover::before {
+            transform: scaleY(1);
         }
 
         .news-image {
             width: 100%;
-            height: 180px;
+            height: 200px;
             object-fit: cover;
-            border-radius: 8px;
-            margin-bottom: 0.75rem;
-            background: var(--border-color);
+            background: var(--skeleton-bg);
+            transition: transform 0.4s ease;
+        }
+
+        .news-card:hover .news-image {
+            transform: scale(1.05);
+        }
+
+        .news-content {
+            padding: 1.2rem;
         }
 
         .news-title {
-            font-size: 1.2rem;
+            font-size: 1.25rem;
             color: var(--text-primary);
-            font-weight: bold;
-            margin-bottom: 0.5rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
             line-height: 1.4;
+            transition: color 0.2s ease;
+        }
+
+        .news-card:hover .news-title {
+            color: var(--accent-color);
         }
 
         .news-summary {
             font-size: 1rem;
             color: var(--text-secondary);
-            margin-bottom: 0.4rem;
-            line-height: 1.5;
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
         }
 
         .news-meta {
@@ -362,7 +502,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 0.5rem;
+            padding-top: 0.8rem;
             border-top: 1px solid var(--border-color);
             margin-top: 0.5rem;
         }
@@ -370,89 +510,77 @@
         .category-tag {
             background: var(--accent-color);
             color: white;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            text-transform: capitalize;
-        }
-
-        .reels-container {
-            position: relative;
-            height: calc(100vh - 140px);
-            overflow: hidden;
-            max-width: 600px;
-            margin: 0 auto;
-            background: var(--bg-color);
-            touch-action: pan-y;
-        }
-
-        .reel {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: var(--card-bg);
-            display: flex;
-            flex-direction: column;
-            padding: 2rem 1.5rem;
-            opacity: 0;
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            transform: translateY(100%);
-            overflow-y: auto;
-        }
-
-        .reel.active {
-            opacity: 1;
-            transform: translateY(0);
-            z-index: 2;
-        }
-
-        .reel-image {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            border-radius: 12px;
-            margin-bottom: 1.5rem;
-            background: var(--border-color);
-        }
-
-        .reel-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: var(--text-primary);
-            margin-bottom: 1rem;
-            line-height: 1.3;
-        }
-
-        .reel-content {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 1rem;
-            flex: 1;
-        }
-
-        .reel-meta {
-            display: flex;
-            justify-content: space-between;
-            padding-top: 1rem;
-            border-top: 1px solid var(--border-color);
-            color: var(--text-meta);
-            font-size: 0.9rem;
-        }
-
-        .reel-indicator {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 0.3rem 0.7rem;
+            padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.8rem;
-            z-index: 3;
+            font-weight: 600;
+            text-transform: capitalize;
+            letter-spacing: 0.3px;
         }
 
+        .read-more-btn {
+            display: inline-block;
+            margin-top: 0.8rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 0.95rem;
+        }
+
+        .read-more-btn:hover {
+            gap: 8px;
+            transform: translateX(4px);
+        }
+
+        .read-more-btn::after {
+            content: ' →';
+        }
+
+        /* ===== SKELETON LOADER ===== */
+        .skeleton {
+            background: linear-gradient(
+                90deg,
+                var(--skeleton-bg) 0%,
+                var(--skeleton-shine) 50%,
+                var(--skeleton-bg) 100%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+        }
+
+        .skeleton-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .skeleton-image {
+            width: 100%;
+            height: 200px;
+            margin-bottom: 1rem;
+        }
+
+        .skeleton-title {
+            height: 24px;
+            width: 80%;
+            margin-bottom: 0.5rem;
+        }
+
+        .skeleton-text {
+            height: 16px;
+            width: 100%;
+            margin-bottom: 0.5rem;
+        }
+
+        .skeleton-text:last-child {
+            width: 60%;
+        }
+
+        /* ===== LOADING & ERROR ===== */
         .loading {
             text-align: center;
             padding: 2rem;
@@ -465,7 +593,7 @@
             padding: 3rem 2rem;
             color: var(--text-meta);
             font-size: 1rem;
-            line-height: 1.6;
+            line-height: 1.8;
         }
 
         .contact-link {
@@ -473,18 +601,22 @@
             text-decoration: none;
             cursor: pointer;
             position: relative;
+            font-weight: 600;
         }
 
         .contact-link:hover::after {
             content: ' (Click to reveal)';
             font-size: 0.85rem;
             color: var(--text-meta);
+            font-weight: normal;
         }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 500px) {
             .card-list {
                 padding: 0.5rem;
                 margin: 1rem auto;
+                gap: 1.2rem;
             }
             header {
                 padding: 0.8rem;
@@ -496,14 +628,18 @@
                 height: 38px;
                 width: 38px;
             }
-            .reel {
-                padding: 1.5rem 1rem;
+            .news-title {
+                font-size: 1.1rem;
             }
-            .reel-title {
-                font-size: 1.3rem;
+            .news-image {
+                height: 180px;
             }
-            .reel-image {
-                height: 200px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
             }
         }
     </style>
@@ -522,7 +658,7 @@
 
     <header>
         <div class="header-left">
-            <button class="menu-btn" id="menuBtn">☰</button>
+            <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
         </div>
         <div class="header-center">
             <img src="image-2.png" alt="Updates Logo" class="logo">
@@ -532,51 +668,73 @@
 
     <div id="homePage" class="page active">
         <div class="card-list" id="homeNewsList">
-            <div class="loading">Loading latest news...</div>
+            <!-- Skeleton loaders -->
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-image"></div>
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+            </div>
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-image"></div>
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+                <div class="skeleton skeleton-text"></div>
+            </div>
         </div>
     </div>
 
     <div id="quickPage" class="page">
-        <div class="reels-container" id="reelsContainer">
-            <div class="loading">Loading quick news...</div>
+        <div class="card-list" id="quickNewsList">
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-image"></div>
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+            </div>
         </div>
     </div>
 
     <div id="headlinesPage" class="page">
         <div class="card-list" id="headlinesList">
-            <div class="loading">Loading headlines...</div>
+            <div class="skeleton-card">
+                <div class="skeleton skeleton-image"></div>
+                <div class="skeleton skeleton-title"></div>
+                <div class="skeleton skeleton-text"></div>
+            </div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <a href="#" class="nav-item active" data-page="homePage">
+        <a href="#" class="nav-item active" data-page="homePage" aria-label="Home">
             <div class="nav-icon">🏠</div>
             <div class="nav-label">Home</div>
         </a>
-        <a href="#" class="nav-item" data-page="quickPage">
+        <a href="#" class="nav-item" data-page="quickPage" aria-label="Quick">
             <div class="nav-icon">⚡</div>
             <div class="nav-label">Quick</div>
         </a>
-        <a href="#" class="nav-item" data-page="headlinesPage">
+        <a href="#" class="nav-item" data-page="headlinesPage" aria-label="Headlines">
             <div class="nav-icon">📰</div>
             <div class="nav-label">Headlines</div>
         </a>
     </div>
 
+    <!-- Settings Modal -->
     <div class="modal" id="settingsModal">
         <div class="modal-content">
-            <span class="modal-close" id="closeSettings">&times;</span>
+            <span class="modal-close" id="closeSettings" aria-label="Close">&times;</span>
             <div class="modal-header">Settings</div>
             <div class="setting-item">
                 <span>Dark Mode</span>
                 <label class="switch">
-                    <input type="checkbox" id="darkModeToggle">
+                    <input type="checkbox" id="darkModeToggle" aria-label="Toggle dark mode">
                     <span class="slider"></span>
                 </label>
             </div>
             <div class="setting-item">
                 <span>Language</span>
-                <select class="language-selector" id="languageSelector">
+                <select class="language-selector" id="languageSelector" aria-label="Select language">
                     <option value="en">English</option>
                     <option value="hi">हिन्दी</option>
                     <option value="es">Español</option>
@@ -587,26 +745,27 @@
             <div class="setting-item">
                 <span>Notifications</span>
                 <label class="switch">
-                    <input type="checkbox" id="notifToggle">
+                    <input type="checkbox" id="notifToggle" aria-label="Toggle notifications">
                     <span class="slider"></span>
                 </label>
             </div>
             <div class="setting-item">
                 <span>Auto-refresh News</span>
                 <label class="switch">
-                    <input type="checkbox" id="autoRefreshToggle">
+                    <input type="checkbox" id="autoRefreshToggle" aria-label="Toggle auto-refresh">
                     <span class="slider"></span>
                 </label>
             </div>
         </div>
     </div>
 
+    <!-- About Modal -->
     <div class="modal" id="aboutModal">
         <div class="modal-content">
-            <span class="modal-close" id="closeAbout">&times;</span>
+            <span class="modal-close" id="closeAbout" aria-label="Close">&times;</span>
             <div class="modal-header">About Updates</div>
             <p>Updates is a comprehensive news aggregator providing latest news from India and around the world in multiple languages.</p>
-            <p style="margin-top: 1rem;"><strong>Version:</strong> 5.3.0 (Persistent Dark Mode)</p>
+            <p style="margin-top: 1rem;"><strong>Version:</strong> 6.0.0 (Professional Edition)</p>
             <p><strong>Developer:</strong> VKB Updates Team</p>
             <p style="margin-top: 1rem;"><strong>News Sources:</strong></p>
             <ul style="padding-left: 1.5rem; line-height: 1.8;">
@@ -618,9 +777,10 @@
         </div>
     </div>
 
+    <!-- Help Modal -->
     <div class="modal" id="helpModal">
         <div class="modal-content">
-            <span class="modal-close" id="closeHelp">&times;</span>
+            <span class="modal-close" id="closeHelp" aria-label="Close">&times;</span>
             <div class="modal-header">Help & Support</div>
             <p>Need help? Contact us:</p>
             <p><strong>📧 Email:</strong> <a href="#" class="contact-link" id="emailLink">Click to reveal email</a></p>
@@ -635,9 +795,10 @@
         </div>
     </div>
 
+    <!-- Article Modal -->
     <div class="modal" id="articleModal">
         <div class="modal-content">
-            <span class="modal-close" id="closeArticle">&times;</span>
+            <span class="modal-close" id="closeArticle" aria-label="Close">&times;</span>
             <div id="articleContent"></div>
         </div>
     </div>
@@ -649,9 +810,6 @@
         };
         
         let allArticles = [];
-        let currentReelIndex = 0;
-        let touchStartY = 0;
-        let touchEndY = 0;
         let currentLanguage = 'en';
         let fetchAttempts = 0;
         const MAX_RETRIES = 3;
@@ -663,6 +821,7 @@
         const overlay = document.getElementById('overlay');
         const languageSelector = document.getElementById('languageSelector');
 
+        // Contact reveal
         document.getElementById('emailLink').addEventListener('click', (e) => {
             e.preventDefault();
             e.target.innerHTML = `<a href="mailto:${CONTACT.email}" style="color: var(--accent-color);">${CONTACT.email}</a>`;
@@ -673,6 +832,7 @@
             e.target.innerHTML = `<a href="tel:${CONTACT.phone}" style="color: var(--accent-color);">${CONTACT.phone}</a>`;
         });
 
+        // Menu toggle
         menuBtn.addEventListener('click', () => {
             sidebar.classList.toggle('open');
             overlay.classList.toggle('active');
@@ -683,10 +843,12 @@
             overlay.classList.remove('active');
         });
 
+        // Language change
         languageSelector.addEventListener('change', (e) => {
             currentLanguage = e.target.value;
             localStorage.setItem('language', currentLanguage);
             fetchAttempts = 0;
+            showSkeletonLoaders();
             fetchAllNews();
         });
 
@@ -696,6 +858,7 @@
             languageSelector.value = savedLanguage;
         }
 
+        // Navigation
         const navItems = document.querySelectorAll('.nav-item');
         const pages = document.querySelectorAll('.page');
 
@@ -712,6 +875,7 @@
             });
         });
 
+        // Modal handlers
         const settingsModal = document.getElementById('settingsModal');
         const aboutModal = document.getElementById('aboutModal');
         const helpModal = document.getElementById('helpModal');
@@ -761,7 +925,7 @@
             if (e.target === articleModal) articleModal.classList.remove('active');
         });
 
-        // ✅ FIXED: Changed to localStorage for persistent dark mode
+        // Dark mode with persistence
         const darkModeToggle = document.getElementById('darkModeToggle');
         let savedTheme = 'light';
         try {
@@ -787,6 +951,7 @@
             }
         });
 
+        // Fetch news with timeout
         async function fetchWithTimeout(url, timeout = 15000) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -929,16 +1094,8 @@
             console.log(`Home: 0-${homeEnd} | Quick: ${homeEnd}-${quickEnd} | Headlines: ${quickEnd}-${headlinesEnd}`);
 
             loadHomeNews(0, homeEnd);
-            if (quickEnd > homeEnd) {
-                loadQuickNews(homeEnd, quickEnd);
-            } else {
-                document.getElementById('reelsContainer').innerHTML = '<div class="error-message">More news needed for this section.</div>';
-            }
-            if (headlinesEnd > quickEnd) {
-                loadHeadlines(quickEnd, headlinesEnd);
-            } else {
-                document.getElementById('headlinesList').innerHTML = '<div class="error-message">More news needed for this section.</div>';
-            }
+            loadQuickNews(homeEnd, quickEnd);
+            loadHeadlines(quickEnd, headlinesEnd);
         }
 
         function loadHomeNews(startIdx, endIdx) {
@@ -953,19 +1110,22 @@
                 return;
             }
             
-            homeArticles.forEach((article) => {
+            homeArticles.forEach((article, index) => {
                 const card = document.createElement('div');
-                card.className = 'news-card';
+                card.className = 'news-card slide-up';
+                card.style.animationDelay = `${index * 0.05}s`;
                 
                 const timeAgo = getTimeAgo(new Date(article.pubDate));
                 
                 card.innerHTML = `
                     ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
-                    <div class="news-title">${article.title}</div>
-                    <div class="news-summary">${article.description || ''}</div>
-                    <div class="news-meta">
-                        <span class="category-tag">${article.source_id || 'News'}</span>
-                        <span>${timeAgo}</span>
+                    <div class="news-content">
+                        <div class="news-title">${article.title}</div>
+                        <div class="news-summary">${article.description || ''}</div>
+                        <div class="news-meta">
+                            <span class="category-tag">${article.source_id || 'News'}</span>
+                            <span>${timeAgo}</span>
+                        </div>
                     </div>
                 `;
                 
@@ -975,71 +1135,45 @@
         }
 
         function loadQuickNews(startIdx, endIdx) {
-            const container = document.getElementById('reelsContainer');
-            container.innerHTML = '';
-            currentReelIndex = 0;
+            const cardList = document.getElementById('quickNewsList');
+            cardList.innerHTML = '';
             
             const quickArticles = allArticles.slice(startIdx, endIdx);
             console.log(`⚡ Loading Quick section: ${quickArticles.length} articles`);
             
             if (quickArticles.length === 0) {
-                container.innerHTML = '<div class="error-message">Not enough articles for Quick News. Try changing language.</div>';
+                cardList.innerHTML = '<div class="error-message">Not enough articles for Quick News. Try changing language.</div>';
                 return;
             }
             
             quickArticles.forEach((article, index) => {
-                const reel = document.createElement('div');
-                reel.className = 'reel' + (index === 0 ? ' active' : '');
+                const card = document.createElement('div');
+                card.className = 'news-card slide-up';
+                card.style.animationDelay = `${index * 0.05}s`;
                 
-                reel.innerHTML = `
-                    <div class="reel-indicator">${index + 1}/${quickArticles.length}</div>
-                    ${article.image_url ? `<img class="reel-image" src="${article.image_url}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
-                    <div class="reel-title">${article.title}</div>
-                    <div class="reel-content">${article.description || ''}</div>
-                    <div class="reel-meta">
-                        <span>${article.source_id || 'News'}</span>
-                        <span>${getTimeAgo(new Date(article.pubDate))}</span>
+                const timeAgo = getTimeAgo(new Date(article.pubDate));
+                
+                card.innerHTML = `
+                    ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
+                    <div class="news-content">
+                        <div class="news-title">${article.title}</div>
+                        <div class="news-summary">${article.description || ''}</div>
+                        ${article.link ? `<a href="${article.link}" target="_blank" class="read-more-btn" onclick="event.stopPropagation()">Read full story</a>` : ''}
+                        <div class="news-meta">
+                            <span class="category-tag">${article.source_id || 'News'}</span>
+                            <span>${timeAgo}</span>
+                        </div>
                     </div>
                 `;
                 
-                container.appendChild(reel);
-            });
-            
-            if (quickArticles.length > 0) {
-                setupSwipeGestures();
-            }
-        }
-
-        function setupSwipeGestures() {
-            const container = document.getElementById('reelsContainer');
-            const reels = container.querySelectorAll('.reel');
-            
-            if (reels.length === 0) return;
-            
-            container.addEventListener('touchstart', (e) => {
-                touchStartY = e.touches[0].clientY;
-            }, { passive: true });
-            
-            container.addEventListener('touchend', (e) => {
-                touchEndY = e.changedTouches[0].clientY;
-                handleSwipe();
-            }, { passive: true });
-            
-            function handleSwipe() {
-                const swipeDistance = touchStartY - touchEndY;
-                
-                if (Math.abs(swipeDistance) > 50) {
-                    if (swipeDistance > 0 && currentReelIndex < reels.length - 1) {
-                        reels[currentReelIndex].classList.remove('active');
-                        currentReelIndex++;
-                        reels[currentReelIndex].classList.add('active');
-                    } else if (swipeDistance < 0 && currentReelIndex > 0) {
-                        reels[currentReelIndex].classList.remove('active');
-                        currentReelIndex--;
-                        reels[currentReelIndex].classList.add('active');
+                card.addEventListener('click', () => {
+                    if (article.link) {
+                        window.open(article.link, '_blank');
                     }
-                }
-            }
+                });
+                
+                cardList.appendChild(card);
+            });
         }
 
         function loadHeadlines(startIdx, endIdx) {
@@ -1054,30 +1188,54 @@
                 return;
             }
             
-            headlinesArticles.forEach((article) => {
+            headlinesArticles.forEach((article, index) => {
                 const card = document.createElement('div');
-                card.className = 'news-card';
+                card.className = 'news-card slide-up';
+                card.style.animationDelay = `${index * 0.05}s`;
                 
                 const timeAgo = getTimeAgo(new Date(article.pubDate));
                 
                 card.innerHTML = `
                     ${article.image_url ? `<img class="news-image" src="${article.image_url}" alt="${article.title}" onerror="this.style.display='none'">` : ''}
-                    <div class="news-title">${article.title}</div>
-                    <div class="news-summary">${article.description || ''}</div>
-                    ${article.link ? `<a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500; margin-top: 0.5rem; display: inline-block;">Read full story →</a>` : ''}
-                    <div class="news-meta">
-                        <span class="category-tag">${article.source_id || 'World'}</span>
-                        <span>${timeAgo}</span>
+                    <div class="news-content">
+                        <div class="news-title">${article.title}</div>
+                        <div class="news-summary">${article.description || ''}</div>
+                        ${article.link ? `<a href="${article.link}" target="_blank" class="read-more-btn" onclick="event.stopPropagation()">Read full story</a>` : ''}
+                        <div class="news-meta">
+                            <span class="category-tag">${article.source_id || 'World'}</span>
+                            <span>${timeAgo}</span>
+                        </div>
                     </div>
                 `;
                 
+                card.addEventListener('click', () => showFullArticle(article));
                 cardList.appendChild(card);
             });
         }
 
+        function showSkeletonLoaders() {
+            const skeletonHTML = `
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image"></div>
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text"></div>
+                    <div class="skeleton skeleton-text"></div>
+                </div>
+                <div class="skeleton-card">
+                    <div class="skeleton skeleton-image"></div>
+                    <div class="skeleton skeleton-title"></div>
+                    <div class="skeleton skeleton-text"></div>
+                </div>
+            `;
+            
+            document.getElementById('homeNewsList').innerHTML = skeletonHTML;
+            document.getElementById('quickNewsList').innerHTML = skeletonHTML;
+            document.getElementById('headlinesList').innerHTML = skeletonHTML;
+        }
+
         function showError(message) {
             document.getElementById('homeNewsList').innerHTML = `<div class="error-message">${message}</div>`;
-            document.getElementById('reelsContainer').innerHTML = `<div class="error-message">${message}</div>`;
+            document.getElementById('quickNewsList').innerHTML = `<div class="error-message">${message}</div>`;
             document.getElementById('headlinesList').innerHTML = `<div class="error-message">${message}</div>`;
         }
 
@@ -1091,7 +1249,7 @@
                     ${article.source_id} • ${new Date(article.pubDate).toLocaleDateString()}
                 </p>
                 <p style="line-height: 1.6; color: var(--text-secondary);">${article.description || article.content || 'Full content not available.'}</p>
-                ${article.link ? `<p style="margin-top: 1rem;"><a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 500;">Read original article →</a></p>` : ''}
+                ${article.link ? `<p style="margin-top: 1rem;"><a href="${article.link}" target="_blank" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Read original article →</a></p>` : ''}
             `;
             
             articleModal.classList.add('active');
@@ -1107,10 +1265,12 @@
             return `${Math.floor(seconds / 86400)} days ago`;
         }
 
+        // Keep backend alive
         setInterval(() => {
             fetch(`${BACKEND_URL}/`).catch(e => console.log('Backend ping'));
         }, 5 * 60 * 1000);
 
+        // Initialize
         fetchAllNews();
     </script>
 </body>
