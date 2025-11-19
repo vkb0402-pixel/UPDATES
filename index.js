@@ -7,7 +7,7 @@ app.use(cors());
 
 // Root route
 app.get('/', (req, res) => {
-  res.send('Backend is running! News API Proxy Service');
+  res.send('Backend is running! News API Proxy Service - Now with Currents API');
 });
 
 // NewsAPI endpoint
@@ -67,10 +67,31 @@ app.get('/api/gnews', async (req, res) => {
   }
 });
 
+// 🆕 Currents API endpoint
+app.get('/api/currents', async (req, res) => {
+  try {
+    const country = req.query.country || 'in';
+    const language = req.query.language || 'en';
+    const apiKey = 'XHsTPUmUy2xRLyDO0bxyFD2BlpSuT6vv7d-hSB7nPXagxAHe';
+    
+    // Currents API uses 'region' instead of 'country'
+    const url = `https://api.currentsapi.services/v1/latest-news?apiKey=${apiKey}&language=${language}&region=${country}`;
+    
+    const response = await fetch(url);
+    const data = await response.json();
+    
+    res.json(data);
+  } catch (error) {
+    console.error('Currents API Error:', error);
+    res.status(500).json({ error: 'Failed to fetch from Currents API', details: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`✅ Server running on port ${PORT}`);
   console.log(`📡 Proxy endpoints ready:
     - /api/newsapi
     - /api/newsdata
-    - /api/gnews`);
+    - /api/gnews
+    - /api/currents (NEW)`);
 });
